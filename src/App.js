@@ -1,3 +1,7 @@
+//@TODO: Add backend (API server)
+//@TODO: Basic structure (combining fe + backend): https://www.fullstackreact.com/articles/using-create-react-app-with-a-server/
+//@TODO: Usage of PostgreSQL and node-postgres (node-postgres.com): https://www.youtube.com/watch?v=2oAS7MtMwqA
+
 import React, { Component } from 'react';
 import $ from "mori";
 
