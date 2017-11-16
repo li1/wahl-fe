@@ -3,43 +3,19 @@
 //@TODO: Usage of PostgreSQL and node-postgres (node-postgres.com): https://www.youtube.com/watch?v=2oAS7MtMwqA
 //https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 
-import React, { Component } from 'react';
-import $ from "mori";
+import React from 'react';
 
-import logo from './logo.svg';
-import "./Welcome.css";
-import db from "./db";
+import Paper from 'material-ui/Paper';
 
-class Welcome extends Component {
+import ExampleChart from "./ExampleChart";
 
-  render() {
-    console.log($.toJs(db()))
+function Welcome(props) {
 
-    return (
-      <div className="Welcome">
-        <header className="Welcome-header">
-          <img src={logo} className="Welcome-logo" alt="logo" />
-          <h1 className="Welcome-title">Welcome to React!</h1>
-        </header>
-
-        <button onClick={e => { db.toggleHonkey() }}>Toggle-Test</button>
-        <button onClick={e => { db.tower() }}>The world has moved on</button>
-        <p>
-          { $.get(db(), "tower") }
-        </p>
-        { $.get(db(), "showHonkey") &&
-          <p>
-            That honkey mah'fa pressed Test!
-          </p> 
-        }
-      </div>  
-    );
-  }
+  return (
+    <Paper>
+      <ExampleChart />
+    </Paper>
+  );
 }
 
 export default Welcome;
-
-/*
-
-
-*/
