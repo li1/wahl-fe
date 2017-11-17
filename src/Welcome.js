@@ -9,12 +9,19 @@ import Paper from 'material-ui/Paper';
 
 import ExampleChart from "./ExampleChart";
 
+import AngleChart from "./AngleChart";
+
 function Welcome(props) {
 
   return (
+      <div>
     <Paper>
       <ExampleChart />
     </Paper>
+      <Paper style={{marginTop: 30}}>
+        <AngleChart title={"Sitzverteilung"} />
+      </Paper>
+  </div>
   );
 }
 
