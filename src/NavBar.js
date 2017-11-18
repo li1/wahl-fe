@@ -12,9 +12,6 @@ const styles = theme => ({
   toolbar: {
     backgroundColor: theme.palette.shades.light.appbar
   },
-  flex: {
-    flex: 1,
-  },
 });
 
 const NavBar = (props) => {
@@ -23,7 +20,7 @@ const NavBar = (props) => {
   return (
     <AppBar>
       <Toolbar className={classes.toolbar}>
-        <Typography type="title" color="inherit" className={classes.flex}>
+        <Typography type="title" color="inherit" style={ {flex: 1} }>
           {title}
         </Typography>
         <Button color="contrast">Bundesergebnisse</Button>

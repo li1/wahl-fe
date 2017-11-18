@@ -12,7 +12,7 @@ function App (props) {
     return (
     <MuiThemeProvider theme = {theme}>
       <NavBar title = "Wahl Informatiko"/>
-      <div style= {{marginTop: 90, marginLeft: 30, marginRight: 30}}>
+      <div style= {{marginTop: 90, marginLeft: 24, marginRight: 24}}>
         <Welcome />
       </div>
     </MuiThemeProvider>
