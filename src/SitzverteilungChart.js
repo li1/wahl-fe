@@ -21,8 +21,8 @@
     render() {
       return (
         <div style={{flexFlow: "column", alignItems: "center", justifyContent: "center"}}>
-          <ResponsiveContainer aspect={1}>
-            <PieChart>
+          <ResponsiveContainer aspect={0.95}>
+            <PieChart renderOnlyTopHalf={ true }>
               <Pie startAngle={180} endAngle={0} data={this.state.chartData} nameKey={"partei"} dataKey={"sitze"}
                    fill="#8884d8" label/>
               <Tooltip />

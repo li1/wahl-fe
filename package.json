@@ -11,7 +11,7 @@
     "react-dom": "^16.0.0",
     "react-scripts": "1.0.14",
     "react-simple-maps": "^0.9.0",
-    "recharts": "^1.0.0-beta.1",
+    "recharts": "github:li1/recharts",
     "typeface-roboto": "0.0.45"
   },
   "scripts": {
