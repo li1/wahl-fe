@@ -16,6 +16,8 @@
 .env.test.local
 .env.production.local
 
+package-lock.json #we want to always test building against the latest versions
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
