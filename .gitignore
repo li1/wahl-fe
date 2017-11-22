@@ -3,6 +3,9 @@
 # dependencies
 /node_modules
 
+#we want to always test building against the latest versions
+package-lock.json 
+
 # testing
 /coverage
 
@@ -15,8 +18,6 @@
 .env.development.local
 .env.test.local
 .env.production.local
-
-package-lock.json #we want to always test building against the latest versions
 
 npm-debug.log*
 yarn-debug.log*
