@@ -26,7 +26,14 @@ class Bundestag extends Component {
                       {partei: "FDP", listenplatz: 1, vorname: "Ronald", nachname: "Hitze", geschlecht: "m"},
                       {partei: "SPD", listenplatz: 1, vorname: "Matthias", nachname: "Vogel", geschlecht: "m"}];
 
-    this.setState({tableData: tableData});
+    const tableData2 = [{partei: "AfD", listenplatz: 1, vorname: "Maria", nachname: "Roger", geschlecht: "w"},
+                      {partei: "AfD", listenplatz: 3, vorname: "Kurt", nachname: "Gödel", geschlecht: "m"},
+                      {partei: "AfD", listenplatz: 2, vorname: "Günther", nachname: "Thiessen", geschlecht: "m"}];
+
+    // this.setState({tableData: tableData});
+    setTimeout(() => {this.setState({tableData: tableData})}, 1000);
+
+    setTimeout(() => {this.setState({tableData: tableData2})}, 5000);
   }
 
   render () {

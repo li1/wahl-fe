@@ -60,11 +60,14 @@ class SortableTable extends Component {
 
   prepareData = data => data.map((datom, idx) => _.assign(datom, {id: idx}));
 
+  calculateNumericHeaders = row => Object.keys(_.pickBy(row, 
+      columnVal => !isNaN(parseFloat(columnVal))));
+
   constructor (props) {
     super(props);
 
-    this.numericHeaders = Object.keys(_.pickBy(props.tableData[0], 
-      columnVal => !isNaN(parseFloat(columnVal))));
+    //@TODO: Recalculate when data updates?
+    this.numericHeaders = this.calculateNumericHeaders(props.tableData[0]);
 
     this.state = { tableData: this.prepareData(props.tableData),
                    headers: this.calculateHeaders(props.tableData),
@@ -72,6 +75,13 @@ class SortableTable extends Component {
                    order: "asc",
                    page: 0,
                    orderBy: null };
+  }
+
+  componentWillReceiveProps (nextProps) {
+    this.numericHeaders = this.calculateNumericHeaders(nextProps.tableData[0]);
+    this.setState({tableData: this.prepareData(nextProps.tableData),
+                   headers: this.calculateHeaders(nextProps.tableData),
+                   orderBy: null});
   }
 
   isHeaderNumeric = header => _.find(this.numericHeaders, q => header === q) !== undefined;
