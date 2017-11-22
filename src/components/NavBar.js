@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Link } from "react-router-dom"
+
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -23,9 +25,11 @@ const NavBar = (props) => {
         <Typography type="title" color="inherit" style={ {flex: 1} }>
           {title}
         </Typography>
-        <Button color="contrast">Bundesergebnisse</Button>
-        <Button color="contrast">Wahlkreisübersicht</Button>
-        <a href="http://www.google.de">
+        <Button color="contrast"><Link to="/">Bundestag</Link></Button>
+        <Button color="contrast"><Link to="/overview">Wahlkreisübersicht</Link></Button>
+        <Button color="contrast"><Link to="/analysis">Analysen</Link></Button>
+        <Button color="contrast"><Link to="/vote">Abstimmen!</Link></Button>
+        <a href="https://github.com/Christoph-Maximilian/DBS-Group4">
           <IconButton color="contrast" aria-label="Code">
             <Code />
           </IconButton>

@@ -13,7 +13,7 @@ import {
 //   margin: "0 auto",
 // }
 
-function WorldMap (props) {
+function Germany (props) {
 
   return(
     <div style={ {height: "84vh" }}>
@@ -99,4 +99,4 @@ function WorldMap (props) {
     // )
 }
 
-export default WorldMap
+export default Germany
