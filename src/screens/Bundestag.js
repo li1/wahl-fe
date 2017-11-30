@@ -4,7 +4,7 @@ import _ from "lodash";
 import Spinner from "../components/Spinner";
 import SitzverteilungChart from "../charts/SitzverteilungChart";
 import SortableTable from "../components/SortableTable";
-import { fullPartyName } from "../util";
+import { abbreviatePartyName, expandPartyName } from "../util";
 
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
@@ -58,22 +58,16 @@ class Bundestag extends Component {
   }
 
   async componentDidMount () {
-    // const res = await fetch("http://localhost:3000/sitzplaetze");
-    // const tableData = await res.json();
-    const tableData = [{partei: "CDU", listenplatz: 1, vorname: "Heinz", nachname: "Meier", geschlecht: "m"},
-                      {partei: "CDU", listenplatz: 2, vorname: "Joseph", nachname: "Reiser", geschlecht: "m"},
-                      {partei: "AfD", listenplatz: 1, vorname: "Maria", nachname: "Roger", geschlecht: "w"},
-                      {partei: "SPD", listenplatz: 8, vorname: "Jana", nachname: "Torfbau", geschlecht: "w"},
-                      {partei: "AfD", listenplatz: 3, vorname: "Kurt", nachname: "Gödel", geschlecht: "m"},
-                      {partei: "AfD", listenplatz: 2, vorname: "Günther", nachname: "Thiessen", geschlecht: "m"},
-                      {partei: "FDP", listenplatz: 1, vorname: "Ronald", nachname: "Hitze", geschlecht: "m"},
-                      {partei: "SPD", listenplatz: 1, vorname: "Matthias", nachname: "Vogel", geschlecht: "m"}];
-    
-    setTimeout(() => {this.setState({tableData: tableData, filteredTableData: tableData})}, 1000);
+    const bundestagsmitglieder = await fetch("http://localhost:3000/bundestagsmitglieder");
+    const tableData = await bundestagsmitglieder.json();
+    tableData.map(row => row.partei = abbreviatePartyName[row.partei]);
+    this.setState({tableData: tableData, filteredTableData: tableData});
+
 
     //fetch sitzverteilung
     const res = await fetch("http://localhost:3000/sitzverteilung");
     const chartData = await res.json();
+    chartData.map(row => row.partei = abbreviatePartyName[row.partei]);
     this.setState({chartData: chartData, gesamtsitze: chartData.reduce((acc, val) => (acc + val.sitze), 0)});
   }
 
@@ -83,17 +77,13 @@ class Bundestag extends Component {
   onChartClick = (data, activeElementClicked) => {
     const { tableData } = this.state;
 
-    const tableData2 = [{partei: "AfD", listenplatz: 1, vorname: "Maria", nachname: "Roger", geschlecht: "w"},
-                      {partei: "AfD", listenplatz: 3, vorname: "Kurt", nachname: "Gödel", geschlecht: "m"},
-                      {partei: "AfD", listenplatz: 2, vorname: "Günther", nachname: "Thiessen", geschlecht: "m"}];
-
     if(activeElementClicked) {
       //reset filter
       this.setState({selectedParty: null, filteredTableData: tableData});
     } else {
       //filter table
       this.setState({selectedParty: data, 
-                     filteredTableData: tableData.filter(row => fullPartyName[row.partei] === data.partei)});
+                     filteredTableData: tableData.filter(row => row.partei === data.partei)});
     }
   }
 
@@ -104,18 +94,18 @@ class Bundestag extends Component {
     if (selectedParty) {
       //selectedParty, hoveredParty
       if (hoveredParty) {
-        chartTitle = hoveredParty.partei;
+        chartTitle = expandPartyName[hoveredParty.partei];
         chartTitleColor = hoveredParty.fill;
 
       //selectedParty, -hoveredParty
       } else {
-        chartTitle = selectedParty.partei;
+        chartTitle = expandPartyName[selectedParty.partei];
         chartTitleColor = selectedParty.fill;
       }
     } else {
       //-selectedParty, hoveredParty
       if (hoveredParty) {
-        chartTitle = hoveredParty.partei;
+        chartTitle = expandPartyName[hoveredParty.partei];
         chartTitleColor = hoveredParty.fill;
       }
     }
@@ -154,12 +144,12 @@ class Bundestag extends Component {
                 indicatorColor="primary"
                 textColor="primary"
                 centered>
-                <Tab label="Parteiergebnisse" />
                 <Tab label="Mitglieder des Bundestags" />
+                <Tab label="Parteiergebnisse" />
               </Tabs>
             </Paper>
-            {tab === 0 && <ParteiergebnisseTable parteiergebnisseData={ chartData } gesamtsitze={ gesamtsitze } /> }
-            {tab === 1 && <KandidatenTable filteredTableData={ filteredTableData } /> }
+            {tab === 0 && <KandidatenTable filteredTableData={ filteredTableData } /> }
+            {tab === 1 && <ParteiergebnisseTable parteiergebnisseData={ chartData } gesamtsitze={ gesamtsitze } /> }
           </Grid>
         </Grid>
       </div>

@@ -2,19 +2,13 @@ import React, {Component} from 'react';
 import {PieChart, Pie, ResponsiveContainer, Tooltip, Cell, Label} from 'recharts';
 
 import Spinner from "../components/Spinner";
+import { colorMapping } from "../util";
  
 class SitzverteilungChart extends  Component {
 
   constructor (props) {
     super(props);
     this.state = {};
-    this.colors = {"Christlich Demokratische Union Deutschlands": "#434686", 
-                   "Sozialdemokratische Partei Deutschlands": "#BC2739", 
-                   "DIE LINKE": "#865DC1", 
-                   "BÜNDNIS 90/DIE GRÜNEN": "#55A166", 
-                   "Christlich-Soziale Union in Bayern e.V.": "#3888BF",
-                   "Freie Demokratische Partei": "#F8CC55",
-                   "Alternative für Deutschland": "#65C7C4" };
   }
 
   async componentDidMount () {
@@ -90,7 +84,7 @@ class SitzverteilungChart extends  Component {
               {
                 chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} 
-                        fill={this.colors[entry.partei]} 
+                        fill={colorMapping[entry.partei]} 
                         opacity={ this.cellOpacity(index) }
                         strokeWidth={3}>
                     <Label />
