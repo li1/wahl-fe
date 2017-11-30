@@ -44,15 +44,17 @@ const EnhancedTableHead = ({onRequestSort, headers, order, orderBy, isHeaderNume
 
 class SortableTable extends Component {
   static propTypes = {
-  tableData: PropTypes.array.isRequired,
+    tableData: PropTypes.array.isRequired,
 
-  rowsPerPage: PropTypes.array,
-  labelRowsPerPage: PropTypes.string
+    rowsPerPage: PropTypes.array,
+    labelRowsPerPage: PropTypes.string,
+    showFooter: PropTypes.bool,
   };
 
   static defaultProps = {
-  rowsPerPage: [10, 25, 50, 100],
-  labelRowsPerPage: "Ergebnisse pro Seite:"
+    rowsPerPage: [10, 25, 50, 100],
+    labelRowsPerPage: "Ergebnisse pro Seite:",
+    showFooter: true,
   };
 
 
@@ -112,6 +114,7 @@ class SortableTable extends Component {
 
   render () {
     const { tableData, headers, rowsPerPage, order, page, orderBy } = this.state;
+    const { showFooter } = this.props;
 
     const slicedTableData = tableData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -135,18 +138,19 @@ class SortableTable extends Component {
               </TableRow>
             ))}
           </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                count={ tableData.length }
-                rowsPerPage={ rowsPerPage }
-                rowsPerPageOptions={ this.props.rowsPerPage }
-                labelRowsPerPage={ this.props.labelRowsPerPage }
-                page={ page }
-                onChangePage={ this.handleChangePage }
-                onChangeRowsPerPage={ this.handleChangeRowsPerPage }/>
-            </TableRow>
-          </TableFooter>
+          {showFooter && 
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  count={ tableData.length }
+                  rowsPerPage={ rowsPerPage }
+                  rowsPerPageOptions={ this.props.rowsPerPage }
+                  labelRowsPerPage={ this.props.labelRowsPerPage }
+                  page={ page }
+                  onChangePage={ this.handleChangePage }
+                  onChangeRowsPerPage={ this.handleChangeRowsPerPage }/>
+              </TableRow>
+            </TableFooter> }
         </Table>
       </Paper>
     )

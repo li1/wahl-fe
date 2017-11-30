@@ -21,14 +21,10 @@ class SitzverteilungChart extends  Component {
     //const data = [{name: 'CDU', value: 200}, {name: 'CSU', value: 49},
     //    {name: 'Group C', value: 30}, {name: 'Group D', value: 12},
     //    {name: 'Group E', value: 12}, {name: 'Group F', value: 22}];
-    const res = await fetch("http://localhost:3000/sitzverteilung");
-    const data = await res.json();
-
-    this.setState({chartData: data,
-                   gesamtsitze: data.reduce((acc, val) => (acc + val.sitze), 0)});
+    // const res = await fetch("http://localhost:3000/sitzverteilung");
+    // const data = await res.json();
   }
 
-  getSitzPercentage = sitze => (((sitze/this.state.gesamtsitze) * 100).toFixed(1) + "%");
 
   onPieEnter = (data, index, callback) => {
     this.setState({activeIndex: index});
@@ -73,8 +69,7 @@ class SitzverteilungChart extends  Component {
 
 
   render() {
-    const { chartData } = this.state;
-    const { onChartHover, onChartUnhover, onChartClick } = this.props; 
+    const { onChartHover, onChartUnhover, onChartClick, chartData } = this.props; 
 
     return (
       <div style={{flexFlow: "row", alignItems: "center", justifyContent: "center"}}>
