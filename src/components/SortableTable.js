@@ -13,11 +13,6 @@ import Table,
 import Paper from 'material-ui/Paper';
 
 
-String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-}
-
-
 const EnhancedTableHead = ({onRequestSort, headers, order, orderBy, isHeaderNumeric}) => {
   const createSortHandler = property => event => {
     onRequestSort(event, property);

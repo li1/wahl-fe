@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {PieChart, Pie, ResponsiveContainer, Tooltip, Cell, Label} from 'recharts';
+import {PieChart, Pie, ResponsiveContainer, Cell, Label} from 'recharts';
 
 import Spinner from "../components/Spinner";
 import { colorMapping } from "../util";
@@ -10,15 +10,6 @@ class SitzverteilungChart extends  Component {
     super(props);
     this.state = {};
   }
-
-  async componentDidMount () {
-    //const data = [{name: 'CDU', value: 200}, {name: 'CSU', value: 49},
-    //    {name: 'Group C', value: 30}, {name: 'Group D', value: 12},
-    //    {name: 'Group E', value: 12}, {name: 'Group F', value: 22}];
-    // const res = await fetch("http://localhost:3000/sitzverteilung");
-    // const data = await res.json();
-  }
-
 
   onPieEnter = (data, index, callback) => {
     this.setState({activeIndex: index});

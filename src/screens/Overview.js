@@ -1,61 +1,102 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 import Paper from 'material-ui/Paper';
 import Card, { CardActions, CardContent } from 'material-ui/Card';
-import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
+import Radio, { RadioGroup } from 'material-ui/Radio';
+import { FormControl, FormControlLabel} from 'material-ui/Form';
 
-import NavBar from "../components/NavBar";
 import ExampleChart from "../charts/ExampleChart";
-import SitzverteilungChart from "../charts/SitzverteilungChart";
 import Germany from "../charts/Germany";
+import { abbreviatePartyName, colorMapping } from "../util";
 
-function Overview(props) {
-  return (
-    <div>
-      <NavBar title = "Übersicht"/>
-      <div style= {{marginTop: 90, marginLeft: 24, marginRight: 24}}>
-          <Grid container justify="center" spacing={ 24 }>
+class Overview extends Component {
+  constructor (props) {
+    super(props);
+    this.state = { selectedOption: "zweitstimmengewinner",
+                   zweitstimmengewinner: {}};
+  }
 
-            <Grid item xs={12} sm={6}>
-              <Germany />
-            </Grid>
+  async componentDidMount () {
+    const zsg = await fetch("http://localhost:3000/zweitstimmensieger");
+    const zweitstimmengewinner = await zsg.json();
+    // const zweitstimmengewinner = [{"land": "Hessen", "partei": "Sozialdemokratische Partei Deutschlands"},
+    //                               {"land": "Saarland", "partei": "Freie Demokratische Partei"},
+    //                               {"land": "Niedersachsen", "partei": "Sozialdemokratische Partei Deutschlands"},
+    //                               {"land": "Bayern", "partei": "DIE LINKE"}];
+    const zsgPrepped = Object.assign(...zweitstimmengewinner.map(
+      row => ({[row.land]: colorMapping[abbreviatePartyName[row.partei]]})
+    ));
+    this.setState({zweitstimmengewinner: zsgPrepped});
 
-            <Grid item xs={12} lg={6}>
-              <Grid container justify="center" spacing={ 16 }>
-                <Grid item xs={12} sm={6}>
-                  <Card>
-                    <CardContent>
-                      <Typography type="headline" component="h2">Sitzverteilung</Typography>
-                      <Typography component="p">Dies ist die Sitzverteilung für 2017.</Typography>
-                      <SitzverteilungChart />
-                    </CardContent>
-                    <CardActions>
-                      <Button dense color="primary">Detailanalyse</Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Card>
-                    <CardContent>
-                      <Typography type="headline" component="h2">Some other info...</Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
+    const erststimmengewinner = [{"land": "Bayern", "partei": "BÜNDNIS 90/DIE GRÜNEN"},
+                                 {"land": "Rheinland-Pfalz", "partei": "BÜNDNIS 90/DIE GRÜNEN"},
+                                 {"land": "Berlin", "partei": "BÜNDNIS 90/DIE GRÜNEN"}];
+    const esgPrepped = Object.assign(...erststimmengewinner.map(
+      row => ({[row.land]: colorMapping[abbreviatePartyName[row.partei]]})
+    ));
+    setTimeout(() => (this.setState({erststimmengewinner: esgPrepped})), 50);
+  }
+
+  updateOption = (event, value) => this.setState({selectedOption: value});
+
+  render () {
+    const { selectedOption } = this.state;
+
+    return (
+      <div>
+            <Grid container spacing={ 24 }>
+              <Grid item xs={12} md={3}>
+                <Typography type="headline" component="h2">Übersichtskarte</Typography>
+                <Typography component="p">Dies ist die Bundesländerübersicht für 2017.</Typography>
+                <Typography component="p">Klicke auf ein Bundesland, um zu filtern.</Typography>
               </Grid>
-            </Grid>
 
-            <Grid item xs={12}>
-              <Paper>
-                <ExampleChart />
-              </Paper>
-            </Grid>
+              <Grid item xs={12} sm={6}>
+                <div style={{animation: "fadein 3s"}}>
+                  <Germany colorMap={ this.state[selectedOption] } />
+                </div>
+              </Grid>
 
-          </Grid>
-      </div>
-    </div>
-  );
+              <Grid item xs={12} lg={3}>
+                <Card>
+                  <CardContent>
+                    <Typography type="headline" component="h2">Optionen</Typography>
+                    <Typography component="p" style={{marginBottom: 24}}>
+                      Färbe die Karte mit den Optionen ein.
+                    </Typography>
+
+                    <FormControl component="fieldset" required>
+                      <RadioGroup
+                        aria-label="Optionen"
+                        name="option"
+                        value={selectedOption}
+                        onChange={this.updateOption}>
+                        <FormControlLabel value="zweitstimmengewinner" control={<Radio />} label="Zweitstimmengewinner" />
+                        <FormControlLabel value="erststimmengewinner" control={<Radio />} label="Erststimmengewinner" />
+                      </RadioGroup>
+                    </FormControl>
+
+                  </CardContent>
+                  { /*
+                  <CardActions>
+                    <Button dense color="primary">Detailanalyse</Button>
+                  </CardActions> */}
+                </Card>
+              </Grid>
+
+              {/*
+              <Grid item xs={12}>
+                <Paper>
+                  <ExampleChart />
+                </Paper>
+              </Grid> */}
+
+            </Grid>
+      </div> 
+    )
+  }
 }
 
 export default Overview;

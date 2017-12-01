@@ -8,7 +8,6 @@ import { abbreviatePartyName, expandPartyName } from "../util";
 
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
-import Card, { CardActions, CardContent } from 'material-ui/Card';
 import Typography from 'material-ui/Typography';
 import Tabs, { Tab } from 'material-ui/Tabs';
 

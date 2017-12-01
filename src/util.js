@@ -1,3 +1,7 @@
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
 export const abbreviatePartyName = {
   "Christlich Demokratische Union Deutschlands": "CDU",
   "Sozialdemokratische Partei Deutschlands": "SPD",
@@ -27,3 +31,4 @@ export const colorMapping = {
   "FDP": "#F8CC55",
   "AfD": "#65C7C4",
 }
+

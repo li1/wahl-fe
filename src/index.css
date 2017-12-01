@@ -13,3 +13,8 @@ a, a:visited, a:hover, a:active {
     text-decoration: none;
     color: inherit;
 }
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
