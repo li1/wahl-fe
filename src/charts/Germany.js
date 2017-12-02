@@ -6,11 +6,15 @@ import {
   ZoomableGroup,
   Geographies,
   Geography,
+  Markers,
+  Marker,
 } from "react-simple-maps"
 
+import { markers, abbreviatePartyName } from "../util";
 
 
-export const arrow = (top, left) => ({
+
+const arrow = (top, left) => ({
   position: "absolute",
   top: top,
   left: left-12,
@@ -23,67 +27,56 @@ export const arrow = (top, left) => ({
 
 
 
-// export const border = {
-//   base: {
-//     display: 'block',
-//     width: 0,
-//     height: 0,
-//     position: 'absolute',
-//     borderStyle: 'solid',
-//   },
-//   top: {
-//     borderColor: theme.border.borderColor + ' transparent transparent transparent',
-//     borderWidth: '9px 9px 0px 9px',
-//     bottom: '-7px',
-//     ...vertical,
-//   },
-//   right: {
-//     borderColor: 'transparent ' + theme.border.borderColor + ' transparent transparent',
-//     borderWidth: '9px 9px 9px 0px',
-//     left: '-7px',
-//     ...horizontal,
-//   },
-//   bottom: {
-//     borderColor: 'transparent transparent ' + theme.border.borderColor +' transparent',
-//     borderWidth: '0px 9px 9px 9px',
-//     top: '-7px',
-//     ...vertical,
-//   },
-//   left: {
-//     borderColor: 'transparent transparent transparent ' + theme.border.borderColor,
-//     borderWidth: '9px 0px 9px 9px',
-//     right: '-7px',
-//     ...horizontal,
-//   },
-// };
+// const MapMarker = ({marker}) => {console.log(marker);return (
+//   <Marker marker={ marker }
+//           style={{ default: { fill: "#FF5722" },
+//                    hover: { fill: "#FFFFFF" },
+//                    pressed: { fill: "#FF5722" }}}>
+//     <circle
+//       cx={0}
+//       cy={0}
+//       r={10}
+//       style={{
+//         stroke: "#FF5722",
+//         strokeWidth: 3,
+//         opacity: 0.9,
+//       }}/>
+//     <text
+//       textAnchor="middle"
+//       y={-25}
+//       style={{
+//         fill: "#607D8B",
+//       }}>
+//       {marker.name}
+//     </text>
+//   </Marker>
+// )};
 
-const mapColor = (landName, colorMap) => {
-  if (colorMap !== undefined) {
-    return colorMap[landName] || "#000";
+const mapColor = (landName, data) => {
+  if (data[landName] !== undefined) {
+    return data[landName].color || "#000";
   } else {
     return "#fff"
   }
 }
 
-const Tooltip = ({content, parentThis, visible}) => {
+const Tooltip = ({hoveredParty, hoveredLand, parentThis, visible}) => {
   const { x, y, dimensions } = parentThis.state;
   const showTooltip = visible ? "visible" : "hidden";
-  
-  //@TODO: content
-  console.log(content);
 
   return (
     <Measure bounds onResize={contentRect => parentThis.setState({dimensions: contentRect.bounds})}>
       {({measureRef}) =>
-        <div style={{visibility: showTooltip}}>
+        <div style={{visibility: showTooltip, color: "#2c2c2c"}}>
           <div ref={measureRef}
             style={{position: "absolute", 
                     padding: 6,
+                    boxShadow: "0px 0px 6px rgba(0,0,0,0.3)",
                     borderRadius: 6,
                     top: y-(dimensions.height + 24), 
                     left: x-(dimensions.width/2),
                     backgroundColor: "#FFF"}}>
-            <div>Hallo Sophia der Niko stinkt!</div>
+            <div>{hoveredLand}: <span style={{fontWeight: "bold"}}>{hoveredParty}</span></div>
           </div>
           <div style={arrow(y-(dimensions.height/2 +12), x)}></div>
         </div>
@@ -102,14 +95,20 @@ class Germany extends Component {
     this.setState({x: event.clientX, 
                    y: event.clientY + window.pageYOffset,
                    showTooltip: true,
-                   tooltipContent: geography});
+                   hoveredLand: geography.properties.name});
   }
 
   handleLeave = () => this.setState({showTooltip: false});
 
+  handleClick = (geography, event) => {
+    console.log(geography, event);
+  }
+
   render () {
-    const { colorMap } = this.props;
-    const { showTooltip, tooltipContent } = this.state;
+    const { data } = this.props;
+    const { showTooltip, hoveredLand } = this.state;
+
+    const hoveredParty = data[hoveredLand] ? abbreviatePartyName[data[hoveredLand].partei] : "Keine Partei";
 
     return (
       <div style={ {height: "84vh" }}>
@@ -121,80 +120,53 @@ class Germany extends Component {
           projection="mercator"
           projectionConfig={ {scale: 3401.3546199031352} }>
           <ZoomableGroup center={[10.437274617500082,51.333495750273435]}>
-          <Geographies geographyUrl="/germany.json" disableOptimization={ true }>
-            {(geographies, projection) => geographies.map((geography, i) => (
-              <Geography
-                key={ i }
-                geography={ geography }
-                projection={ projection }
-                onMouseMove={ this.handleMove }
-                onMouseLeave={ this.handleLeave }
-                style={ { default: {
-                            fill: mapColor(geography.properties.name, colorMap),
-                            stroke: "#FFF",
-                            strokeWidth: 1,
-                          },
-                          hover: { fill: "#FF0000" } }} />
-            ))}
-          </Geographies>
+            <Geographies geographyUrl="/germany.json" disableOptimization={ true }>
+              {(geographies, projection) => geographies.map((geography, i) => (
+                <Geography
+                  key={ i }
+                  geography={ geography }
+                  projection={ projection }
+                  onMouseMove={ this.handleMove }
+                  onMouseLeave={ this.handleLeave }
+                  onClick={ this.handleClick }
+                  style={ { default: {
+                              fill: mapColor(geography.properties.name, data),
+                              stroke: "#FFF",
+                              strokeWidth: 1,
+                            },
+                            hover: { fill: mapColor(geography.properties.name, data),
+                                     opacity: 0.8,
+                                     stroke: "#FFF",
+                                     strokeWidth: 1, },
+                            pressed: { fill: mapColor(geography.properties.name, data),
+                                       stroke: "#FFF",
+                                       strokeWidth: 1,} }} />
+              ))}
+            </Geographies>
+            {/*
+              <Markers>
+                {markers.map((marker, i) => (
+                  <Marker marker={ marker }
+                          key={ i }>
+                    <text textAnchor="middle"
+                          y={0}
+                          style={{fill: "#fff"}}>
+                      {(data[marker.name] !== undefined) && abbreviatePartyName[data[marker.name].partei]}
+                    </text>
+                  </Marker>
+                ))}
+              </Markers> 
+            */}
           </ZoomableGroup>
         </ComposableMap>
-        <Tooltip content={ tooltipContent } 
+        <Tooltip hoveredLand={ hoveredLand } 
+                 hoveredParty={ hoveredParty }
                  parentThis= { this } 
                  visible={ showTooltip }/>
       </div>
     )
   }
 }
-
-    // return (
-    //   <div style={wrapperStyles}>
-    //     <ComposableMap
-    //       projectionConfig={{
-    //         scale: 205,
-    //         rotation: [-11,0,0],
-    //       }}
-    //       width={980}
-    //       height={551}
-    //       style={{
-    //         width: "100%",
-    //         height: "auto",
-    //       }}
-    //       >
-    //       <ZoomableGroup center={[0,20]} disablePanning>
-    //         <Geographies geographyUrl="/germany.json">
-    //           {(geographies, projection) => geographies.map((geography, i) => geography.id !== "ATA" && (
-    //             <Geography
-    //               key={i}
-    //               geography={geography}
-    //               projection={projection}
-    //               style={{
-    //                 default: {
-    //                   fill: "#ECEFF1",
-    //                   stroke: "#607D8B",
-    //                   strokeWidth: 0.75,
-    //                   outline: "none",
-    //                 },
-    //                 hover: {
-    //                   fill: "#607D8B",
-    //                   stroke: "#607D8B",
-    //                   strokeWidth: 0.75,
-    //                   outline: "none",
-    //                 },
-    //                 pressed: {
-    //                   fill: "#FF5722",
-    //                   stroke: "#607D8B",
-    //                   strokeWidth: 0.75,
-    //                   outline: "none",
-    //                 },
-    //               }}
-    //             />
-    //           ))}
-    //         </Geographies>
-    //       </ZoomableGroup>
-    //     </ComposableMap>
-    //   </div>
-    // )
 
 
 export default Germany

@@ -11,6 +11,7 @@ import Table,
          TablePagination,
          TableSortLabel } from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
+import Collapse from 'material-ui/transitions/Collapse';
 
 
 const EnhancedTableHead = ({onRequestSort, headers, order, orderBy, isHeaderNumeric}) => {
@@ -44,12 +45,14 @@ class SortableTable extends Component {
     rowsPerPage: PropTypes.array,
     labelRowsPerPage: PropTypes.string,
     showFooter: PropTypes.bool,
+    selectHandler: PropTypes.func
   };
 
   static defaultProps = {
     rowsPerPage: [10, 25, 50, 100],
     labelRowsPerPage: "Ergebnisse pro Seite:",
     showFooter: true,
+    selectHandler: () => null,
   };
 
 
@@ -71,7 +74,8 @@ class SortableTable extends Component {
                    rowsPerPage: this.props.rowsPerPage[0],
                    order: "asc",
                    page: 0,
-                   orderBy: null };
+                   orderBy: null, };
+                   // selectedRow: null };
   }
 
   componentWillReceiveProps (nextProps) {
@@ -109,7 +113,7 @@ class SortableTable extends Component {
 
   render () {
     const { tableData, headers, rowsPerPage, order, page, orderBy } = this.state;
-    const { showFooter } = this.props;
+    const { showFooter, selectHandler } = this.props;
 
     const slicedTableData = tableData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -124,11 +128,12 @@ class SortableTable extends Component {
             onRequestSort={ this.handleRequestSort } />
           <TableBody>
             { slicedTableData.map(row => (
-              <TableRow key={row.id}>
+              <TableRow hover key={row.id}
+                        onClick={ e => selectHandler(row) }>
                 {headers.map((header, idx) => (
-                  <TableCell key={idx} numeric={ this.isHeaderNumeric(header) }>
-                    {row[header]}
-                  </TableCell>
+                    <TableCell key={idx} numeric={ this.isHeaderNumeric(header) }>
+                        {row[header]}
+                    </TableCell>
                 ))}
               </TableRow>
             ))}
