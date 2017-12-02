@@ -20,7 +20,7 @@ const ParteiergebnisseTable = ({parteiergebnisseData, gesamtsitze}) => {
     return <Spinner />;
   } else {
     //@TODO: percentages aren't sorted as numbers
-    parteiergebnisseData.map(ergebnis => _.set(ergebnis, "Prozent (in %)", getSitzPercentage(ergebnis.sitze)));
+    parteiergebnisseData.map(ergebnis => _.set(ergebnis, "%", getSitzPercentage(ergebnis.sitze)));
 
     return (
       <SortableTable tableData={ parteiergebnisseData } showFooter={ false } />

@@ -6,11 +6,9 @@ import {
   ZoomableGroup,
   Geographies,
   Geography,
-  Markers,
-  Marker,
 } from "react-simple-maps"
 
-import { markers, abbreviatePartyName } from "../util";
+import { abbreviatePartyName } from "../util";
 
 
 
@@ -100,18 +98,27 @@ class Germany extends Component {
 
   handleLeave = () => this.setState({showTooltip: false});
 
-  handleClick = (geography, event) => {
-    console.log(geography, event);
+  handleClick = name => {
+    const { selectedLand } = this.state;
+    const { onClickHandler } = this.props;
+
+    if (selectedLand === name) {
+      this.setState({selectedLand: null});
+    } else {
+      this.setState({selectedLand: name});
+    }
+
+    onClickHandler(name);
   }
 
   render () {
     const { data } = this.props;
-    const { showTooltip, hoveredLand } = this.state;
+    const { showTooltip, hoveredLand, selectedLand } = this.state;
 
     const hoveredParty = data[hoveredLand] ? abbreviatePartyName[data[hoveredLand].partei] : "Keine Partei";
 
     return (
-      <div style={ {height: "84vh" }}>
+      <div style={ {height: "78vh" }}>
         <ComposableMap 
           viewBox="0 0 573 780"
           style={ {width: "100%", height: "100%"}}
@@ -128,11 +135,12 @@ class Germany extends Component {
                   projection={ projection }
                   onMouseMove={ this.handleMove }
                   onMouseLeave={ this.handleLeave }
-                  onClick={ this.handleClick }
+                  onClick={ () => this.handleClick(geography.properties.name) }
                   style={ { default: {
                               fill: mapColor(geography.properties.name, data),
+                              opacity: (selectedLand === geography.properties.name) ? 0.8 : 1.0,
                               stroke: "#FFF",
-                              strokeWidth: 1,
+                              strokeWidth: (selectedLand === geography.properties.name) ? 4 : 1,
                             },
                             hover: { fill: mapColor(geography.properties.name, data),
                                      opacity: 0.8,

@@ -11,7 +11,6 @@ import Table,
          TablePagination,
          TableSortLabel } from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
-import Collapse from 'material-ui/transitions/Collapse';
 
 
 const EnhancedTableHead = ({onRequestSort, headers, order, orderBy, isHeaderNumeric}) => {
@@ -37,6 +36,14 @@ const EnhancedTableHead = ({onRequestSort, headers, order, orderBy, isHeaderNume
   );
 }
 
+const cellStyle = (header, style, content) => {
+  if (style && style[header]) {
+    return ((content >= 0) ? style[header].pos : style[header].neg)
+  } else {
+    return {}
+  }
+}
+
 
 class SortableTable extends Component {
   static propTypes = {
@@ -45,7 +52,10 @@ class SortableTable extends Component {
     rowsPerPage: PropTypes.array,
     labelRowsPerPage: PropTypes.string,
     showFooter: PropTypes.bool,
-    selectHandler: PropTypes.func
+    selectHandler: PropTypes.func,
+
+    cellStyles: PropTypes.object,
+    orderBy: PropTypes.string,
   };
 
   static defaultProps = {
@@ -53,12 +63,22 @@ class SortableTable extends Component {
     labelRowsPerPage: "Ergebnisse pro Seite:",
     showFooter: true,
     selectHandler: () => null,
+    cellStyles: null,
+    orderBy: null,
   };
 
 
   calculateHeaders = tableData => Object.keys(_.omit(tableData[0], "id"));
 
-  prepareData = data => data.map((datom, idx) => _.assign(datom, {id: idx}));
+  prepareData = (data, orderBy) => {
+    let preparedData = data.map((datom, idx) => _.assign(datom, {id: idx}));
+
+    if (orderBy) {
+      preparedData = preparedData.sort((a, b) => (a[orderBy] > b[orderBy] ? -1 : 1));
+    }
+
+    return preparedData;
+  };
 
   calculateNumericHeaders = row => Object.keys(_.pickBy(row, 
       columnVal => !isNaN(parseFloat(columnVal))));
@@ -69,20 +89,20 @@ class SortableTable extends Component {
     //@TODO: Recalculate when data updates?
     this.numericHeaders = this.calculateNumericHeaders(props.tableData[0]);
 
-    this.state = { tableData: this.prepareData(props.tableData),
+    this.state = { tableData: this.prepareData(props.tableData, props.orderBy),
                    headers: this.calculateHeaders(props.tableData),
                    rowsPerPage: this.props.rowsPerPage[0],
                    order: "asc",
                    page: 0,
-                   orderBy: null, };
+                   orderBy: props.orderBy, };
                    // selectedRow: null };
   }
 
   componentWillReceiveProps (nextProps) {
     this.numericHeaders = this.calculateNumericHeaders(nextProps.tableData[0]);
-    this.setState({tableData: this.prepareData(nextProps.tableData),
-                   headers: this.calculateHeaders(nextProps.tableData),
-                   orderBy: null});
+
+    this.setState({tableData: this.prepareData(nextProps.tableData, nextProps.orderBy),
+                   headers: this.calculateHeaders(nextProps.tableData)});
   }
 
   isHeaderNumeric = header => _.find(this.numericHeaders, q => header === q) !== undefined;
@@ -113,7 +133,7 @@ class SortableTable extends Component {
 
   render () {
     const { tableData, headers, rowsPerPage, order, page, orderBy } = this.state;
-    const { showFooter, selectHandler } = this.props;
+    const { showFooter, selectHandler, cellStyles } = this.props;
 
     const slicedTableData = tableData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -131,8 +151,8 @@ class SortableTable extends Component {
               <TableRow hover key={row.id}
                         onClick={ e => selectHandler(row) }>
                 {headers.map((header, idx) => (
-                    <TableCell key={idx} numeric={ this.isHeaderNumeric(header) }>
-                        {row[header]}
+                    <TableCell key={idx} numeric={ this.isHeaderNumeric(header) } style={ cellStyle(header, cellStyles, row[header]) }>
+                      {row[header]}
                     </TableCell>
                 ))}
               </TableRow>

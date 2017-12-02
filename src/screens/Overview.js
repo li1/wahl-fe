@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import _ from "lodash";
 
-import Paper from 'material-ui/Paper';
-import Card, { CardActions, CardContent } from 'material-ui/Card';
+import Card, { CardContent } from 'material-ui/Card';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import Radio, { RadioGroup } from 'material-ui/Radio';
 import { FormControl, FormControlLabel} from 'material-ui/Form';
 import List, { ListItem, ListItemText } from 'material-ui/List';
 
-import ExampleChart from "../charts/ExampleChart";
 import Germany from "../charts/Germany";
 import WahlkreisDetail from "../components/WahlkreisDetail";
 import SortableTable from "../components/SortableTable";
@@ -23,7 +21,11 @@ class Overview extends Component {
                    erststimmengewinner: null,
                    erststimmenFollower: null,
                    zweitstimmenFollower: null,
-                   showWahlkreisDetails: false};
+                   showWahlkreisDetailsWithWahlkreis: false,
+                   filteredLand: "",
+                   wahlkreisData: [],
+                   filteredWahlkreisData: [],
+                   tableTitle: "Gesamtdeutschland"};
   }
 
   async componentDidMount () {
@@ -58,14 +60,18 @@ class Overview extends Component {
                             partei: row.partei}})
     ));
     this.setState({erststimmenFollower: esfPrepped});
+
+    const wahlkreisRequest = await fetch("http://localhost:3000/wahlkreisuebersicht2017");
+    const wahlkreisData = await wahlkreisRequest.json();
+    wahlkreisData.forEach(row => (row["Direktkandidat-Partei"] = abbreviatePartyName[row["Direktkandidat-Partei"]]));
+    wahlkreisData.forEach(row => (row["Siegerpartei"] = abbreviatePartyName[row["Siegerpartei"]]));
+    wahlkreisData.forEach(row => row["Wahlbeteiligung [in %]"] = parseFloat((row["Wahlbeteiligung [in %]"] * 100).toFixed(2)));
+    this.setState({wahlkreisData, filteredWahlkreisData: wahlkreisData});
   }
 
   updateOption = (event, value) => this.setState({selectedOption: value});
 
-  onWahlkreisSelect = (row) => {
-    console.log(row);
-    this.setState({showWahlkreisDetails: true});
-  };
+  onWahlkreisSelect = row => this.setState({showWahlkreisDetailsWithWahlkreis: row.wahlkreis});
 
   createLegend = data => {
     if (data) {
@@ -75,15 +81,26 @@ class Overview extends Component {
     return {};
   }
 
+  filterWahlkreise = land => {
+    const { filteredLand, wahlkreisData } = this.state;
+
+    if (filteredLand === land) {
+      this.setState({filteredWahlkreisData: wahlkreisData, tableTitle: "Gesamtdeutschland"});
+    } else {
+      this.setState({filteredWahlkreisData: wahlkreisData.filter(row => row.bundesland === land),
+                     tableTitle: land});
+    }
+  }
+
   render () {
-    const { selectedOption, showWahlkreisDetails } = this.state;
+    const { selectedOption, showWahlkreisDetailsWithWahlkreis, filteredWahlkreisData, tableTitle } = this.state;
     const legend = this.createLegend(this.state[selectedOption]);
-    _.map(legend, (key, val) => (console.log(val, key)));
 
     return (
       <div>
-        <WahlkreisDetail open={ showWahlkreisDetails }
-                         onRequestClose={ () => this.setState({showWahlkreisDetails: false}) }/>
+        <WahlkreisDetail open={ showWahlkreisDetailsWithWahlkreis && true }
+                         wahlkreis={ showWahlkreisDetailsWithWahlkreis }
+                         onRequestClose={ () => this.setState({showWahlkreisDetailsWithWahlkreis: false}) }/>
 
         <Grid container spacing={ 24 }>
           <Grid item xs={12} md={3}>
@@ -94,8 +111,12 @@ class Overview extends Component {
 
           <Grid item xs={12} sm={6}>
             <div style={{animation: "fadein 3s"}}>
-              <Germany data={ this.state[selectedOption] || {} } />
+              <Germany data={ this.state[selectedOption] || {} }
+                       onClickHandler={ this.filterWahlkreise }/>
             </div>
+            <Typography type="title" component="h2" style={{textAlign:"center", marginTop: 12}}>
+              {tableTitle}
+            </Typography>
           </Grid>
 
           <Grid item xs={12} lg={3}>
@@ -128,7 +149,7 @@ class Overview extends Component {
 
                 <List>
                 {_.map(legend, (color, partyName) => (
-                  <ListItem style={{paddingLeft: 0, paddingRight: 0, marginBottom: 0}}>
+                  <ListItem key={partyName} style={{paddingLeft: 0, paddingRight: 0, marginBottom: 0}}>
                     <span style={{width: 20, height: 20, backgroundColor: color, marginRight: 12, borderRadius: "50%"}} />
                     <ListItemText inset primary={abbreviatePartyName[partyName]} style={{paddingLeft: 0}}/>
                   </ListItem>
@@ -140,10 +161,7 @@ class Overview extends Component {
           </Grid>
 
           <Grid item xs={12}>
-            <SortableTable tableData={ [{wahlkreis: 1, name: "Gurke"},
-                                        {wahlkreis: 2, name: "Gans"},
-                                        {wahlkreis: 3, name: "Peter"},
-                                        {wahlkreis: 4, name: "Großmünden"}] }
+            <SortableTable tableData={ filteredWahlkreisData }
                            labelRowsPerPage="Wahlkreise pro Seite" 
                            selectHandler={ this.onWahlkreisSelect }/>
           </Grid>

@@ -10,6 +10,7 @@ export const abbreviatePartyName = {
   "Christlich-Soziale Union in Bayern e.V.": "CSU",
   "Freie Demokratische Partei": "FDP",
   "Alternative für Deutschland": "AfD",
+  "Übrige": "Übrige",
 };
 
 export const expandPartyName = {
@@ -20,6 +21,7 @@ export const expandPartyName = {
   "CSU": "Christlich-Soziale Union in Bayern e.V.",
   "FDP": "Freie Demokratische Partei",
   "AfD": "Alternative für Deutschland",
+  "Übrige": "Übrige",
 };
 
 export const colorMapping = {
