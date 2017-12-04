@@ -22,7 +22,6 @@ class Overview extends Component {
                    erststimmenFollower: null,
                    zweitstimmenFollower: null,
                    showWahlkreisDetailsWithWahlkreis: false,
-                   filteredLand: "",
                    wahlkreisData: [],
                    filteredWahlkreisData: [],
                    tableTitle: "Gesamtdeutschland"};
@@ -82,9 +81,9 @@ class Overview extends Component {
   }
 
   filterWahlkreise = land => {
-    const { filteredLand, wahlkreisData } = this.state;
+    const { tableTitle, wahlkreisData } = this.state;
 
-    if (filteredLand === land) {
+    if (tableTitle === land) {
       this.setState({filteredWahlkreisData: wahlkreisData, tableTitle: "Gesamtdeutschland"});
     } else {
       this.setState({filteredWahlkreisData: wahlkreisData.filter(row => row.bundesland === land),
