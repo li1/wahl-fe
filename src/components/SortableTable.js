@@ -62,7 +62,7 @@ class SortableTable extends Component {
     rowsPerPage: [10, 25, 50, 100],
     labelRowsPerPage: "Ergebnisse pro Seite:",
     showFooter: true,
-    selectHandler: () => null,
+    selectHandler: null,
     cellStyles: null,
     orderBy: null,
   };
@@ -92,7 +92,7 @@ class SortableTable extends Component {
     this.state = { tableData: this.prepareData(props.tableData, props.orderBy),
                    headers: this.calculateHeaders(props.tableData),
                    rowsPerPage: this.props.rowsPerPage[0],
-                   order: "asc",
+                   order: this.props.orderDir,
                    page: 0,
                    orderBy: props.orderBy, };
                    // selectedRow: null };
@@ -148,8 +148,8 @@ class SortableTable extends Component {
             onRequestSort={ this.handleRequestSort } />
           <TableBody>
             { slicedTableData.map(row => (
-              <TableRow hover key={row.id}
-                        onClick={ e => selectHandler(row) }>
+              <TableRow hover={ selectHandler && true } key={row.id}
+                        onClick={ selectHandler && (e => selectHandler(row)) }>
                 {headers.map((header, idx) => (
                     <TableCell key={idx} numeric={ this.isHeaderNumeric(header) } style={ cellStyle(header, cellStyles, row[header]) }>
                       {row[header]}

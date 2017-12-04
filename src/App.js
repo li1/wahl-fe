@@ -2,6 +2,8 @@ import React from 'react';
 
 import Overview from "./screens/Overview";
 import Bundestag from "./screens/Bundestag";
+import AnalysisSelection from "./screens/AnalysisSelection";
+import CloseCall from "./screens/CloseCall";
 import NavBar from "./components/NavBar"
 
 import { Route, Switch } from "react-router-dom"
@@ -26,7 +28,8 @@ const Screen = (props) => {
 
 const BundestagScreen = (props) => <Screen component={ <Bundestag /> } title="Bundestag" {...props} />
 const OverviewScreen = (props) => <Screen component={ <Overview /> } title="Wahlkreisübersicht" {...props} />
-const AnalysisScreen = (props) => <Screen component={ <Bundestag /> } title="Analysen" {...props} />
+const AnalysisScreen = (props) => <Screen component={ <AnalysisSelection /> } title="Analysen" {...props} />
+const CloseCallScreen = (props) => <Screen component={ <CloseCall /> } title="Analysen" {...props} />
 const VoteScreen = (props) => <Screen component={ <Bundestag /> } title="Wahlzettel" {...props} />
 const NotFound = () => <div style={{margin:30}}>
                           404 not found. Go <a style={{textDecoration: "underline"}} href="/">home</a>.
@@ -39,6 +42,7 @@ function App (props) {
           <Route exact path="/" render={ BundestagScreen } />
           <Route path="/overview" render={ OverviewScreen }/>
           <Route path="/analysis" render={ AnalysisScreen }/>
+          <Route path="/closecall" render={ CloseCallScreen } />
           <Route path="/vote" render={ VoteScreen }/>
           <Route component={ NotFound }/>
         </Switch>

@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import _ from "lodash";
 
+import Paper from 'material-ui/Paper';
 import Card, { CardContent } from 'material-ui/Card';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import Radio, { RadioGroup } from 'material-ui/Radio';
 import { FormControl, FormControlLabel} from 'material-ui/Form';
 import List, { ListItem, ListItemText } from 'material-ui/List';
+import Tabs, { Tab } from 'material-ui/Tabs';
 
 import Germany from "../charts/Germany";
 import WahlkreisDetail from "../components/WahlkreisDetail";
@@ -16,7 +18,8 @@ import { abbreviatePartyName, colorMapping } from "../util";
 class Overview extends Component {
   constructor (props) {
     super(props);
-    this.state = { selectedOption: "zweitstimmengewinner",
+    this.state = { tab: 0,
+                   selectedOption: "zweitstimmengewinner",
                    zweitstimmengewinner: null,
                    erststimmengewinner: null,
                    erststimmenFollower: null,
@@ -24,7 +27,9 @@ class Overview extends Component {
                    showWahlkreisDetailsWithWahlkreis: false,
                    wahlkreisData: [],
                    filteredWahlkreisData: [],
-                   tableTitle: "Gesamtdeutschland"};
+                   tableTitle: "Gesamtdeutschland",
+                   ueberhangData: [],
+                   filteredUeberhangData: []};
   }
 
   async componentDidMount () {
@@ -60,12 +65,16 @@ class Overview extends Component {
     ));
     this.setState({erststimmenFollower: esfPrepped});
 
-    const wahlkreisRequest = await fetch("http://localhost:3000/wahlkreisuebersicht2017");
+    const wahlkreisRequest = await fetch("http://localhost:3000/wahlkreisuebersicht/2017");
     const wahlkreisData = await wahlkreisRequest.json();
     wahlkreisData.forEach(row => (row["Direktkandidat-Partei"] = abbreviatePartyName[row["Direktkandidat-Partei"]]));
     wahlkreisData.forEach(row => (row["Siegerpartei"] = abbreviatePartyName[row["Siegerpartei"]]));
     wahlkreisData.forEach(row => row["Wahlbeteiligung [in %]"] = parseFloat((row["Wahlbeteiligung [in %]"] * 100).toFixed(2)));
     this.setState({wahlkreisData, filteredWahlkreisData: wahlkreisData});
+
+    const ueberhangRequest = await fetch("http://localhost:3000/ueberhangmandate/2017");
+    const ueberhangData = await ueberhangRequest.json();
+    this.setState({ueberhangData, filteredUeberhangData: ueberhangData});
   }
 
   updateOption = (event, value) => this.setState({selectedOption: value});
@@ -80,19 +89,25 @@ class Overview extends Component {
     return {};
   }
 
-  filterWahlkreise = land => {
-    const { tableTitle, wahlkreisData } = this.state;
+  filterTables = land => {
+    const { tableTitle, wahlkreisData, ueberhangData } = this.state;
 
     if (tableTitle === land) {
-      this.setState({filteredWahlkreisData: wahlkreisData, tableTitle: "Gesamtdeutschland"});
+      this.setState({filteredWahlkreisData: wahlkreisData, 
+                     filteredUeberhangData: ueberhangData, 
+                     tableTitle: "Gesamtdeutschland"});
     } else {
       this.setState({filteredWahlkreisData: wahlkreisData.filter(row => row.bundesland === land),
+                     filteredUeberhangData: ueberhangData.filter(row => row.bundesland === land),
                      tableTitle: land});
     }
   }
 
+  changeTab = (e, v) => this.setState({tab: v});
+
   render () {
-    const { selectedOption, showWahlkreisDetailsWithWahlkreis, filteredWahlkreisData, tableTitle } = this.state;
+    const { selectedOption, showWahlkreisDetailsWithWahlkreis, 
+            filteredWahlkreisData, tableTitle, filteredUeberhangData, tab } = this.state;
     const legend = this.createLegend(this.state[selectedOption]);
 
     return (
@@ -105,13 +120,14 @@ class Overview extends Component {
           <Grid item xs={12} md={3}>
             <Typography type="headline" component="h2">Übersichtskarte</Typography>
             <Typography component="p">Dies ist die Bundesländerübersicht für 2017.</Typography>
-            <Typography component="p">Klicke auf ein Bundesland, um zu filtern.</Typography>
+            <Typography component="p">Klicke auf ein Bundesland, um die Tabellen zu filtern.</Typography>
+            <Typography component="p">Klicke auf einen Wahlkreis, um Details zu sehen.</Typography>
           </Grid>
 
           <Grid item xs={12} sm={6}>
             <div style={{animation: "fadein 3s"}}>
               <Germany data={ this.state[selectedOption] || {} }
-                       onClickHandler={ this.filterWahlkreise }/>
+                       onClickHandler={ this.filterTables }/>
             </div>
             <Typography type="title" component="h2" style={{textAlign:"center", marginTop: 12}}>
               {tableTitle}
@@ -160,9 +176,24 @@ class Overview extends Component {
           </Grid>
 
           <Grid item xs={12}>
-            <SortableTable tableData={ filteredWahlkreisData }
-                           labelRowsPerPage="Wahlkreise pro Seite" 
-                           selectHandler={ this.onWahlkreisSelect }/>
+            <Paper style={{marginBottom: 12}}>
+              <Tabs
+                value={ tab }
+                onChange={ this.changeTab }
+                indicatorColor="primary"
+                textColor="primary"
+                centered>
+                <Tab label="Wahlkreisdetails" />
+                <Tab label="Überhangmandate" />
+              </Tabs>
+            </Paper>
+            {tab === 0 && <SortableTable 
+                            tableData={ filteredWahlkreisData }
+                            labelRowsPerPage="Wahlkreise pro Seite" 
+                            selectHandler={ this.onWahlkreisSelect } /> }
+            {tab === 1 && <SortableTable 
+                            tableData={ filteredUeberhangData } /> }
+
           </Grid>
           {/*
           <Grid item xs={12}>

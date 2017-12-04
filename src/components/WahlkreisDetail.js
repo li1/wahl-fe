@@ -22,7 +22,7 @@ class WahlkreisDetail extends Component {
     const { wahlkreis } = nextProps;
 
     if (wahlkreis) {
-      const req = await fetch("http://localhost:3000/wahlkreisdetails2017/" + wahlkreis);
+      const req = await fetch("http://localhost:3000/wahlkreisdetails/2017/" + wahlkreis);
       const data = await req.json();
 
       console.log(data)

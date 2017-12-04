@@ -12,21 +12,24 @@ import Typography from 'material-ui/Typography';
 import Tabs, { Tab } from 'material-ui/Tabs';
 
 
-
-const ParteiergebnisseTable = ({parteiergebnisseData, gesamtsitze}) => {
+const ParteiergebnisseTable = ({parteiergebnisseData, gesamtsitze, parentThis}) => {
   const getSitzPercentage = sitze => parseFloat((((sitze/gesamtsitze) * 100).toFixed(1)));
 
   if (parteiergebnisseData === null || parteiergebnisseData.length === 0) { //data still loading
     return <Spinner />;
+
   } else {
-    //@TODO: percentages aren't sorted as numbers
     parteiergebnisseData.map(ergebnis => _.set(ergebnis, "%", getSitzPercentage(ergebnis.sitze)));
 
     return (
-      <SortableTable tableData={ parteiergebnisseData } showFooter={ false } />
-    );
+      <SortableTable 
+        tableData={ parteiergebnisseData } 
+        showFooter={ false } 
+        orderBy="%" />
+    )
   }
 }
+
 
 const KandidatenTable = ({filteredTableData}) => {
   if (filteredTableData === null) { //tableData still loading
@@ -44,6 +47,7 @@ const KandidatenTable = ({filteredTableData}) => {
   }
 }
 
+
 class Bundestag extends Component {
   constructor (props) {
     super(props);
@@ -53,7 +57,7 @@ class Bundestag extends Component {
                    tableData: null,
                    filteredTableData: null,
                    selectedParty: null,
-                   hoveredParty: null };
+                   hoveredParty: null};
   }
 
   async componentDidMount () {
@@ -124,7 +128,8 @@ class Bundestag extends Component {
           <Grid item xs={12} md={3}>
             <Typography type="headline" component="h2">Sitzverteilung</Typography>
             <Typography component="p">Dies ist die Sitzverteilung für 2017.</Typography>
-            <Typography component="p">Klicke auf eine der Fraktionen, um zu filtern.</Typography>
+            <Typography component="p">Klicke auf eine Fraktionen, um die Tabellen zu filtern.</Typography>
+            <Typography component="p">Klicke auf ein Parteiergebnis, um Details anzuzeigen.</Typography>
           </Grid>
           <Grid item xs={12} md={6}>   
             <SitzverteilungChart chartData={ chartData }
@@ -138,8 +143,8 @@ class Bundestag extends Component {
           <Grid item xs={12}>
             <Paper style={{marginBottom: 12}}>
               <Tabs
-                value={this.state.tab}
-                onChange={this.changeTab}
+                value={ tab }
+                onChange={ this.changeTab }
                 indicatorColor="primary"
                 textColor="primary"
                 centered>
@@ -148,7 +153,10 @@ class Bundestag extends Component {
               </Tabs>
             </Paper>
             {tab === 0 && <KandidatenTable filteredTableData={ filteredTableData } /> }
-            {tab === 1 && <ParteiergebnisseTable parteiergebnisseData={ chartData } gesamtsitze={ gesamtsitze } /> }
+            {tab === 1 && <ParteiergebnisseTable 
+                            parteiergebnisseData={ chartData } 
+                            gesamtsitze={ gesamtsitze }
+                            parentThis={ this } /> }
           </Grid>
         </Grid>
       </div>
