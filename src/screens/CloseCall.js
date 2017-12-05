@@ -22,7 +22,7 @@ class CloseCall extends Component {
   }
 
   async componentDidMount () {
-    const knappsteReq = await fetch("http://localhost:3000/knappste/2017");
+    const knappsteReq = await fetch("http://localhost:3000/knappste");
     const knappsteData = await knappsteReq.json();
     _.forEach(knappsteData, row => row["abstand [in %]"] = parseFloat((row["abstand [in %]"] * 100).toFixed(4)));
 
@@ -37,7 +37,7 @@ class CloseCall extends Component {
     const winners = _.filter(knappsteData, row => row.gewinner);
     const losers = _.filter(knappsteData, row => !row.gewinner);
 
-    const omit = ["partei", "gewinner"];
+    const omit = ["partei", "gewinner", "legislaturperiodeid"];
     const filteredKnappsteWinners = _.map(_.filter(winners, row => row.partei === e.target.value), row => _.omit(row, omit));
     const filteredKnappsteLosers = _.map(_.filter(losers, row => row.partei === e.target.value), row => _.omit(row, omit));
 
@@ -85,7 +85,7 @@ class CloseCall extends Component {
                   type="title"
                   style={{marginBottom: 18}} 
                   component="h2">
-                  <span style={{color: "#388E3C"}}>Gewinner</span> aus der {selectedParty}
+                  Knappste <span style={{color: "#388E3C"}}>Gewinner</span> aus der {selectedParty}
                 </Typography>
                 <SortableTable style={{marginBottom: 30}} tableData={ filteredKnappsteWinners } showFooter={ false } />
               </div>
@@ -96,7 +96,7 @@ class CloseCall extends Component {
                   type="title" 
                   style={{marginBottom: 18}} 
                   component="h2">
-                  <span style={{color: "#D32F2F"}}>Verlierer</span> aus der {selectedParty}
+                  Knappste <span style={{color: "#D32F2F"}}>Verlierer</span> aus der {selectedParty}
                 </Typography> 
                 <SortableTable tableData={ filteredKnappsteLosers } showFooter={ false } />
               </div>

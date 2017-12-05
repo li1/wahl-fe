@@ -33,7 +33,7 @@ class Overview extends Component {
   }
 
   async componentDidMount () {
-    const zsg = await fetch("http://localhost:3000/zweitstimmensieger");
+    const zsg = await fetch("http://localhost:3000/bundeslanderg/zweit/sieger");
     const zweitstimmengewinner = await zsg.json();
     const zsgPrepped = Object.assign(...zweitstimmengewinner.map(
       row => ({[row.land]: {color: colorMapping[abbreviatePartyName[row.partei]],
@@ -41,7 +41,7 @@ class Overview extends Component {
     ));
     this.setState({zweitstimmengewinner: zsgPrepped});
 
-    const zsf = await fetch("http://localhost:3000/zweitstimmenFollower");
+    const zsf = await fetch("http://localhost:3000/bundeslanderg/zweit/zweiter");
     const zweitstimmenFollower = await zsf.json();
     const zsfPrepped = Object.assign(...zweitstimmenFollower.map(
       row => ({[row.land]: {color: colorMapping[abbreviatePartyName[row.partei]],
@@ -49,7 +49,7 @@ class Overview extends Component {
     ));
     this.setState({zweitstimmenFollower: zsfPrepped});
 
-    const esg = await fetch("http://localhost:3000/erststimmensieger");
+    const esg = await fetch("http://localhost:3000/bundeslanderg/erst/sieger");
     const erststimmengewinner = await esg.json();
     const esgPrepped = Object.assign(...erststimmengewinner.map(
       row => ({[row.land]: {color: colorMapping[abbreviatePartyName[row.partei]],
@@ -57,7 +57,7 @@ class Overview extends Component {
     ));
     this.setState({erststimmengewinner: esgPrepped});
 
-    const esf = await fetch("http://localhost:3000/erststimmenFollower");
+    const esf = await fetch("http://localhost:3000/bundeslanderg/erst/zweiter");
     const erststimmenFollower = await esf.json();
     const esfPrepped = Object.assign(...erststimmenFollower.map(
       row => ({[row.land]: {color: colorMapping[abbreviatePartyName[row.partei]],
