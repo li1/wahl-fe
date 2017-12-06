@@ -51,15 +51,16 @@ class AnalysisSelection extends Component {
           <Grid item xs={12} md={4}>
             <Card>
               <CardContent>
-                <Typography type="headline" component="h2">Close Call</Typography>
+                <Typography type="headline" component="h2">Demographie</Typography>
                 <Typography component="p">
-                  Hier werden die knappsten Sieger und Verlierer der Wahl vorgestellt. 
-                  Wähle eine Partei aus, um die jeweiligen Tops und Flops anzuzeigen.</Typography>
+                  Hier werden Altersgruppen und Geschlechter der Bundestagsabgeordneten zusammengefasst.</Typography>
               </CardContent>
               <CardActions>
-                <Button dense color="primary">
-                   Analyse ansehen
-                </Button>
+                <a href="/demographie">
+                  <Button dense color="primary">
+                     Analyse ansehen
+                  </Button>
+                </a>
               </CardActions>
             </Card>
           </Grid>
