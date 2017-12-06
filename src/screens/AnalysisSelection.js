@@ -22,9 +22,27 @@ class AnalysisSelection extends Component {
               </CardContent>
               <CardActions>
                 <a href="/closecall">
-                <Button dense color="primary">
-                   Analyse ansehen
-                 </Button>
+                  <Button dense color="primary">
+                     Analyse ansehen
+                  </Button>
+                </a>
+              </CardActions>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <Card>
+              <CardContent>
+                <Typography type="headline" component="h2">Falschwählervergleich</Typography>
+                <Typography component="p">
+                  Sind manche Parteien besonders stark in Wahlkreisen, in denen es viele Wahlverweigerer gibt?
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <a href="/umgewichtung">
+                  <Button dense color="primary">
+                     Analyse ansehen
+                  </Button>
                 </a>
               </CardActions>
             </Card>
@@ -41,23 +59,7 @@ class AnalysisSelection extends Component {
               <CardActions>
                 <Button dense color="primary">
                    Analyse ansehen
-                 </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <Card>
-              <CardContent>
-                <Typography type="headline" component="h2">Close Call</Typography>
-                <Typography component="p">
-                  Hier werden die knappsten Sieger und Verlierer der Wahl vorgestellt. 
-                  Wähle eine Partei aus, um die jeweiligen Tops und Flops anzuzeigen.</Typography>
-              </CardContent>
-              <CardActions>
-                <Button dense color="primary">
-                   Analyse ansehen
-                 </Button>
+                </Button>
               </CardActions>
             </Card>
           </Grid>
