@@ -7,6 +7,7 @@ import CloseCall from "./screens/CloseCall";
 import Gewichtung from "./screens/Gewichtung";
 import Demographie from "./screens/Demographie";
 import NavBar from "./components/NavBar"
+import Vote from "./screens/Vote"
 
 import { Route, Switch } from "react-router-dom"
 
@@ -34,7 +35,7 @@ const AnalysisScreen = (props) => <Screen component={ <AnalysisSelection /> } ti
 const CloseCallScreen = (props) => <Screen component={ <CloseCall /> } title="Analysen" {...props} />
 const GewichtungScreen = (props) => <Screen component={ <Gewichtung /> } title="Analysen" {...props} />
 const DemographieScreen = (props) => <Screen component={ <Demographie /> } title="Analysen" {...props} />
-const VoteScreen = (props) => <Screen component={ <Bundestag /> } title="Wahlzettel" {...props} />
+const VoteScreen = (props) => <Screen component={ <Vote /> } title="Wahlzettel" {...props} />
 const NotFound = () => <div style={{margin:30}}>
                           404 not found. Go <a style={{textDecoration: "underline"}} href="/">home</a>.
                         </div>
