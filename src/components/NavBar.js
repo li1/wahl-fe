@@ -25,10 +25,10 @@ const NavBar = (props) => {
         <Typography type="title" color="inherit" style={ {flex: 1} }>
           {title}
         </Typography>
-        <Button color="contrast"><Link to="/">Bundestag</Link></Button>
-        <Button color="contrast"><Link to="/overview">Wahlkreisübersicht</Link></Button>
-        <Button color="contrast"><Link to="/analysis">Analysen</Link></Button>
-        <Button color="contrast"><Link to="/vote">Abstimmen!</Link></Button>
+        <Link to="/"><Button color="contrast">Bundestag</Button></Link>
+        <Link to="/overview"><Button color="contrast">Wahlkreisübersicht</Button></Link>
+        <Link to="/analysis"><Button color="contrast">Analysen</Button></Link>
+        <Link to="/vote"><Button color="contrast">Abstimmen!</Button></Link>
         <a href="https://github.com/Christoph-Maximilian/DBS-Group4">
           <IconButton color="contrast" aria-label="Code">
             <Code />
