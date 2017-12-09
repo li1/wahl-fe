@@ -21,6 +21,10 @@ import Tooltip from 'material-ui/Tooltip';
 import DeleteIcon from 'material-ui-icons/Delete';
 import FilterListIcon from 'material-ui-icons/FilterList';
 
+ function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 let counter = 0;
 function createData(jsondata) {
     for(let i = 0; i <  jsondata.length; i++){
@@ -41,15 +45,30 @@ class EnhancedTableHead extends React.Component {
         order: PropTypes.string.isRequired,
         orderBy: PropTypes.string.isRequired,
         rowCount: PropTypes.number.isRequired,
+        columnData : []
     };
 
     createSortHandler = property => event => {
         this.props.onRequestSort(event, property);
     };
 
+    componentWillReceiveProps (nextProps) {
+        this.setState({
+            columnData : nextProps.columnData
+        });
+    }
     render() {
-        const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+        const { onSelectAllClick, order, orderBy, numSelected, rowCount, columnData } = this.props;
+        let capitalizedHeaders = [];
+        let index = 0;
+        if (columnData.length > 0) {
+            for(var key in Object.keys(columnData[0])){
+                capitalizedHeaders.push(capitalizeFirstLetter(Object.keys(columnData[0])[index++] + "" ));
+            }
+            capitalizedHeaders.pop();
 
+        }
+        let i = 0;
         return (
             <TableHead>
                 <TableRow>
@@ -60,27 +79,18 @@ class EnhancedTableHead extends React.Component {
                             onChange={onSelectAllClick}
                         />
                     </TableCell>
-                    {columnData.map(column => {
+                    {
+                        columnData.map(column => {
                         return (
                             <TableCell
                                 key={column.id}
                                 numeric={column.numeric}
                                 padding={column.disablePadding ? 'none' : 'default'}
                             >
-                                <Tooltip
-                                    title="Sort"
-                                    placement={column.numeric ? 'bottom-end' : 'bottom-start'}
-                                    enterDelay={300}
-                                >
-                                    <TableSortLabel
-                                        active={orderBy === column.id}
-                                        direction={order}
-                                        onClick={this.createSortHandler(column.id)}
-                                    >
-                                        {column.label}
-                                    </TableSortLabel>
-                                </Tooltip>
+                                {capitalizedHeaders[i++]
+                                     }
                             </TableCell>
+
                         );
                     }, this)}
                 </TableRow>
@@ -115,7 +125,7 @@ const toolbarStyles = theme => ({
 });
 
 let EnhancedTableToolbar = props => {
-    const { numSelected, classes } = props;
+    const { numSelected, classes, title } = props;
 
     return (
         <Toolbar
@@ -127,7 +137,7 @@ let EnhancedTableToolbar = props => {
                 {numSelected > 0 ? (
                     <Typography type="subheading">{numSelected} selected</Typography>
                 ) : (
-                    <Typography type="title">Erststimme</Typography>
+                    <Typography type="title">{title}</Typography>
                 )}
             </div>
             <div className={classes.spacer} />
@@ -179,7 +189,8 @@ class EnhancedTable extends React.Component {
             selected: [],
             data: props.data,
             page: 0,
-            rowsPerPage: 5,
+            rowsPerPage: 15,
+            title: "default"
         };
     }
 
@@ -245,6 +256,8 @@ class EnhancedTable extends React.Component {
     componentWillReceiveProps (nextProps) {
        this.setState({
            data: createData(nextProps.data),
+           title : nextProps.title,
+           rowsPerPage: nextProps.data.length,
            selected: []
        });
     }
@@ -254,12 +267,12 @@ class EnhancedTable extends React.Component {
     render() {
         console.log("TEST" + data)
         const { classes } = this.props;
-        const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
+        const { data, order, orderBy, selected, rowsPerPage, page, title } = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
         return (
             <Paper className={classes.root}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar numSelected={selected.length} title={title}  />
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table}>
                         <EnhancedTableHead
@@ -269,10 +282,17 @@ class EnhancedTable extends React.Component {
                             onSelectAllClick={this.handleSelectAllClick}
                             onRequestSort={this.handleRequestSort}
                             rowCount={data.length}
+                            columnData={data}
                         />
                         <TableBody>
                             {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(n => {
                                 const isSelected = this.isSelected(n.id);
+                                var cells = [];
+                                {Object.keys(n).forEach(key => {
+                                    if (key !== "id") {
+                                        cells.push(<TableCell>{n[key]}</TableCell>);
+                                    }
+                                })}
                                 return (
                                     <TableRow
                                         hover
@@ -287,11 +307,9 @@ class EnhancedTable extends React.Component {
                                         <TableCell padding="checkbox">
                                             <Checkbox checked={isSelected} />
                                         </TableCell>
-                                        <TableCell padding="none">{n.name}</TableCell>
-                                        <TableCell numeric>{n.calories}</TableCell>
-                                        <TableCell numeric>{n.fat}</TableCell>
-                                        <TableCell numeric>{n.carbs}</TableCell>
-                                        <TableCell numeric>{n.protein}</TableCell>
+
+                                        {cells}
+
                                     </TableRow>
                                 );
                             })}
