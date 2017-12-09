@@ -56,7 +56,7 @@ class SitzverteilungChart extends Component {
       onChartHover,
       onChartUnhover,
       onChartClick,
-      chartData,
+      chartData
     } = this.props;
 
     return (
@@ -64,9 +64,8 @@ class SitzverteilungChart extends Component {
         style={{
           flexFlow: "row",
           alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+          justifyContent: "center"
+        }}>
         {!chartData ? (
           <Spinner />
         ) : (
@@ -87,15 +86,13 @@ class SitzverteilungChart extends Component {
                   this.onPieClick(data, index, onChartClick)
                 }
                 fill="#DDD"
-                label
-              >
+                label>
                 {chartData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={colorMapping[entry.partei]}
                     opacity={this.cellOpacity(index)}
-                    strokeWidth={3}
-                  >
+                    strokeWidth={3}>
                     <Label />
                   </Cell>
                 ))}

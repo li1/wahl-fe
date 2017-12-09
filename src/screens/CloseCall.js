@@ -18,7 +18,7 @@ class CloseCall extends Component {
       filteredKnappsteWinners: null,
       filteredKnappsteLosers: null,
       selectItems: null,
-      selectedParty: "",
+      selectedParty: ""
     };
   }
 
@@ -57,7 +57,7 @@ class CloseCall extends Component {
     this.setState({
       selectedParty: e.target.value,
       filteredKnappsteWinners,
-      filteredKnappsteLosers,
+      filteredKnappsteLosers
     });
   };
 
@@ -66,7 +66,7 @@ class CloseCall extends Component {
       filteredKnappsteWinners,
       filteredKnappsteLosers,
       selectItems,
-      selectedParty,
+      selectedParty
     } = this.state;
 
     return (
@@ -91,8 +91,7 @@ class CloseCall extends Component {
               <Select
                 value={selectedParty}
                 onChange={this.handleChange}
-                input={<Input name="party" id="party-sel" />}
-              >
+                input={<Input name="party" id="party-sel" />}>
                 {selectItems &&
                   selectItems.map((party, idx) => (
                     <MenuItem key={idx} value={party}>
@@ -113,8 +112,7 @@ class CloseCall extends Component {
                     <Typography
                       type="title"
                       style={{ marginBottom: 18 }}
-                      component="h2"
-                    >
+                      component="h2">
                       Knappste{" "}
                       <span style={{ color: "#388E3C" }}>Gewinner</span> aus der{" "}
                       {selectedParty}
@@ -132,8 +130,7 @@ class CloseCall extends Component {
                     <Typography
                       type="title"
                       style={{ marginBottom: 18 }}
-                      component="h2"
-                    >
+                      component="h2">
                       Knappste{" "}
                       <span style={{ color: "#D32F2F" }}>Verlierer</span> aus
                       der {selectedParty}

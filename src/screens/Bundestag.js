@@ -14,7 +14,7 @@ import Tabs, { Tab } from "material-ui/Tabs";
 const ParteiergebnisseTable = ({
   parteiergebnisseData,
   gesamtsitze,
-  parentThis,
+  parentThis
 }) => {
   const getSitzPercentage = sitze =>
     parseFloat((sitze / gesamtsitze * 100).toFixed(1));
@@ -71,7 +71,7 @@ class Bundestag extends Component {
       tableData: null,
       filteredTableData: null,
       selectedParty: null,
-      hoveredParty: null,
+      hoveredParty: null
     };
   }
 
@@ -89,7 +89,7 @@ class Bundestag extends Component {
     chartData.map(row => (row.partei = abbreviatePartyName[row.partei]));
     this.setState({
       chartData: chartData,
-      gesamtsitze: chartData.reduce((acc, val) => acc + val.sitze, 0),
+      gesamtsitze: chartData.reduce((acc, val) => acc + val.sitze, 0)
     });
   }
 
@@ -106,7 +106,7 @@ class Bundestag extends Component {
       //filter table
       this.setState({
         selectedParty: data,
-        filteredTableData: tableData.filter(row => row.partei === data.partei),
+        filteredTableData: tableData.filter(row => row.partei === data.partei)
       });
     }
   };
@@ -146,7 +146,7 @@ class Bundestag extends Component {
       hoveredParty,
       tab,
       chartData,
-      gesamtsitze,
+      gesamtsitze
     } = this.state;
     const [chartTitle, chartTitleColor] = this.calculateChartInfo(
       selectedParty,
@@ -183,9 +183,8 @@ class Bundestag extends Component {
               style={{
                 textAlign: "center",
                 marginTop: 12,
-                color: chartTitleColor,
-              }}
-            >
+                color: chartTitleColor
+              }}>
               {chartTitle}
             </Typography>
           </Grid>
@@ -196,8 +195,7 @@ class Bundestag extends Component {
                 onChange={this.changeTab}
                 indicatorColor="primary"
                 textColor="primary"
-                centered
-              >
+                centered>
                 <Tab label="Mitglieder des Bundestags" />
                 <Tab label="Parteiergebnisse" />
               </Tabs>

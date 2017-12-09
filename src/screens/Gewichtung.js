@@ -7,7 +7,7 @@ import {
   Scatter,
   XAxis,
   YAxis,
-  Label,
+  Label
 } from "recharts";
 
 import Paper from "material-ui/Paper";
@@ -25,8 +25,8 @@ import Spinner from "../components/Spinner";
 const diffStyle = {
   "Veränderung [in %]": {
     pos: { color: "#388E3C" },
-    neg: { color: "#D32F2F" },
-  },
+    neg: { color: "#D32F2F" }
+  }
 };
 
 const AnteilPlot = ({ data }) => (
@@ -34,8 +34,7 @@ const AnteilPlot = ({ data }) => (
     <Typography
       type="subheading"
       component="p"
-      style={{ marginBottom: 12, minHeight: 48 }}
-    >
+      style={{ marginBottom: 12, minHeight: 48 }}>
       {data[0].name}
     </Typography>
     <ResponsiveContainer aspect={1.5}>
@@ -45,8 +44,7 @@ const AnteilPlot = ({ data }) => (
           type="number"
           name="Stimmanteil"
           unit="%"
-          tickCount={3}
-        >
+          tickCount={3}>
           <Label value="Zweitstimmenanteil" position="insideTop" offset={20} />
         </XAxis>
         <YAxis
@@ -55,14 +53,12 @@ const AnteilPlot = ({ data }) => (
           name="Falschwähleranteil"
           unit="%"
           tickCount={3}
-          domain={[0, 2.2]}
-        >
+          domain={[0, 2.2]}>
           <Label
             angle={270}
             position="left"
             style={{ textAnchor: "middle" }}
-            offset={-5}
-          >
+            offset={-5}>
             Falschwähleranteil
           </Label>
         </YAxis>
@@ -79,7 +75,7 @@ class Gewichtung extends Component {
       umgewichtungPlot: null,
       selectItems: [],
       selectedItem: "",
-      tab: 0,
+      tab: 0
     };
   }
 
@@ -101,7 +97,7 @@ class Gewichtung extends Component {
     const umgewichtungPlot = _.groupBy(umgewresP, "name");
     const selectItems = [
       "Alle (Achtung Performance)",
-      ...Object.keys(umgewichtungPlot),
+      ...Object.keys(umgewichtungPlot)
     ];
 
     const umgew = await fetch("http://localhost:3000/umgewichtung");
@@ -140,7 +136,7 @@ class Gewichtung extends Component {
       selectItems,
       selectedItem,
       tab,
-      umgewichtung,
+      umgewichtung
     } = this.state;
 
     return (
@@ -164,8 +160,7 @@ class Gewichtung extends Component {
               onChange={this.changeTab}
               indicatorColor="primary"
               textColor="primary"
-              centered
-            >
+              centered>
               <Tab label="Gewichtungsvergeleich" />
               <Tab label="Visualisierung" />
             </Tabs>
@@ -182,9 +177,8 @@ class Gewichtung extends Component {
                   paddingRight: 18,
                   paddingLeft: 18,
                   paddingTop: 6,
-                  paddingBottom: 6,
-                }}
-              >
+                  paddingBottom: 6
+                }}>
                 <Grid container>
                   <Grid item md={4} />
                   <Grid item xs={12} md={4}>
@@ -195,8 +189,7 @@ class Gewichtung extends Component {
                       <Select
                         value={selectedItem}
                         onChange={this.handleChange}
-                        input={<Input name="party" id="party-sel" />}
-                      >
+                        input={<Input name="party" id="party-sel" />}>
                         {selectItems &&
                           selectItems.map((party, idx) => (
                             <MenuItem key={idx} value={party}>

@@ -4,7 +4,7 @@ import _ from "lodash";
 import Dialog, {
   DialogTitle,
   DialogContent,
-  DialogContentText,
+  DialogContentText
 } from "material-ui/Dialog";
 import Grid from "material-ui/Grid";
 import Tabs, { Tab } from "material-ui/Tabs";
@@ -14,8 +14,8 @@ import SortableTable from "./SortableTable";
 const vorjahrStyle = {
   "Vorjahresvergleich [in %]": {
     pos: { color: "#388E3C" },
-    neg: { color: "#D32F2F" },
-  },
+    neg: { color: "#D32F2F" }
+  }
 };
 
 class WahlkreisDetail extends Component {
@@ -42,7 +42,7 @@ class WahlkreisDetail extends Component {
           "wahlkreis",
           "zweitstimmen",
           "Zweitstimmenanteil [in %]",
-          "Vorjahresvergleich [in %]",
+          "Vorjahresvergleich [in %]"
         ])
       );
       _.forEach(
@@ -57,7 +57,7 @@ class WahlkreisDetail extends Component {
           "direktkandidat",
           "wahlkreis",
           "erststimmen",
-          "Erststimmenanteil [in %]",
+          "Erststimmenanteil [in %]"
         ])
       );
       _.forEach(
@@ -99,8 +99,7 @@ class WahlkreisDetail extends Component {
                 onChange={this.changeTab}
                 indicatorColor="primary"
                 textColor="primary"
-                centered
-              >
+                centered>
                 <Tab label="Direktkandidaten" />
                 <Tab label="Parteiergebnisse" />
               </Tabs>

@@ -5,7 +5,7 @@ import {
   ComposableMap,
   ZoomableGroup,
   Geographies,
-  Geography,
+  Geography
 } from "react-simple-maps";
 
 import { abbreviatePartyName } from "../util";
@@ -18,7 +18,7 @@ const arrow = (top, left) => ({
   height: 0,
   borderStyle: "solid",
   borderWidth: "12px 12px 0 12px",
-  borderColor: "#fff transparent transparent transparent",
+  borderColor: "#fff transparent transparent transparent"
 });
 
 // const MapMarker = ({marker}) => {console.log(marker);return (
@@ -63,8 +63,7 @@ const Tooltip = ({ hoveredParty, hoveredLand, parentThis, visible }) => {
       bounds
       onResize={contentRect =>
         parentThis.setState({ dimensions: contentRect.bounds })
-      }
-    >
+      }>
       {({ measureRef }) => (
         <div style={{ visibility: showTooltip, color: "#2c2c2c" }}>
           <div
@@ -76,9 +75,8 @@ const Tooltip = ({ hoveredParty, hoveredLand, parentThis, visible }) => {
               borderRadius: 6,
               top: y - (dimensions.height + 24),
               left: x - dimensions.width / 2,
-              backgroundColor: "#FFF",
-            }}
-          >
+              backgroundColor: "#FFF"
+            }}>
             <div>
               {hoveredLand}:{" "}
               <span style={{ fontWeight: "bold" }}>{hoveredParty}</span>
@@ -98,7 +96,7 @@ class Germany extends Component {
       x: 0,
       y: 0,
       dimensions: { width: 0, height: 0 },
-      showTooltip: false,
+      showTooltip: false
     };
   }
 
@@ -107,7 +105,7 @@ class Germany extends Component {
       x: event.clientX,
       y: event.clientY + window.pageYOffset,
       showTooltip: true,
-      hoveredLand: geography.properties.name,
+      hoveredLand: geography.properties.name
     });
   };
 
@@ -142,13 +140,11 @@ class Germany extends Component {
           width={573}
           height={780}
           projection="mercator"
-          projectionConfig={{ scale: 3401.3546199031352 }}
-        >
+          projectionConfig={{ scale: 3401.3546199031352 }}>
           <ZoomableGroup center={[10.437274617500082, 51.333495750273435]}>
             <Geographies
               geographyUrl="/germany.json"
-              disableOptimization={true}
-            >
+              disableOptimization={true}>
               {(geographies, projection) =>
                 geographies.map((geography, i) => (
                   <Geography
@@ -167,19 +163,19 @@ class Germany extends Component {
                             : 1.0,
                         stroke: "#FFF",
                         strokeWidth:
-                          selectedLand === geography.properties.name ? 4 : 1,
+                          selectedLand === geography.properties.name ? 4 : 1
                       },
                       hover: {
                         fill: mapColor(geography.properties.name, data),
                         opacity: 0.8,
                         stroke: "#FFF",
-                        strokeWidth: 1,
+                        strokeWidth: 1
                       },
                       pressed: {
                         fill: mapColor(geography.properties.name, data),
                         stroke: "#FFF",
-                        strokeWidth: 1,
-                      },
+                        strokeWidth: 1
+                      }
                     }}
                   />
                 ))

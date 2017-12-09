@@ -4,7 +4,7 @@ import Table, {
   TableBody,
   TableCell,
   TableHead,
-  TableRow,
+  TableRow
 } from "material-ui/Table";
 import Toolbar from "material-ui/Toolbar";
 import Typography from "material-ui/Typography";
@@ -36,7 +36,7 @@ class EnhancedTable extends React.Component {
     this.state = {
       selected: [],
       data: props.data,
-      title: "",
+      title: ""
     };
   }
 
@@ -66,7 +66,7 @@ class EnhancedTable extends React.Component {
     this.setState({
       data: nextProps.data,
       title: nextProps.title,
-      selected: [],
+      selected: []
     });
   }
 
@@ -101,8 +101,7 @@ class EnhancedTable extends React.Component {
                     aria-checked={isSelected}
                     tabIndex={-1}
                     key={n.id}
-                    selected={isSelected}
-                  >
+                    selected={isSelected}>
                     <TableCell padding="checkbox">
                       <Checkbox checked={isSelected} />
                     </TableCell>

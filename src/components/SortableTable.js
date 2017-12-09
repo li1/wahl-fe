@@ -9,7 +9,7 @@ import Table, {
   TableHead,
   TableRow,
   TablePagination,
-  TableSortLabel,
+  TableSortLabel
 } from "material-ui/Table";
 import Paper from "material-ui/Paper";
 
@@ -18,7 +18,7 @@ const EnhancedTableHead = ({
   headers,
   order,
   orderBy,
-  isHeaderNumeric,
+  isHeaderNumeric
 }) => {
   const createSortHandler = property => event => {
     onRequestSort(event, property);
@@ -33,8 +33,7 @@ const EnhancedTableHead = ({
               <TableSortLabel
                 active={orderBy === header}
                 direction={order}
-                onClick={createSortHandler(header)}
-              >
+                onClick={createSortHandler(header)}>
                 {header.capitalize()}
               </TableSortLabel>
             </TableCell>
@@ -64,7 +63,7 @@ class SortableTable extends Component {
     selectHandler: PropTypes.func,
 
     cellStyles: PropTypes.object,
-    orderBy: PropTypes.string,
+    orderBy: PropTypes.string
   };
 
   static defaultProps = {
@@ -73,7 +72,7 @@ class SortableTable extends Component {
     showFooter: true,
     selectHandler: null,
     cellStyles: null,
-    orderBy: null,
+    orderBy: null
   };
 
   calculateHeaders = tableData => Object.keys(_.omit(tableData[0], "id"));
@@ -105,7 +104,7 @@ class SortableTable extends Component {
       rowsPerPage: this.props.rowsPerPage[0],
       order: this.props.orderDir,
       page: 0,
-      orderBy: props.orderBy,
+      orderBy: props.orderBy
     };
     // selectedRow: null };
   }
@@ -115,7 +114,7 @@ class SortableTable extends Component {
 
     this.setState({
       tableData: this.prepareData(nextProps.tableData, nextProps.orderBy),
-      headers: this.calculateHeaders(nextProps.tableData),
+      headers: this.calculateHeaders(nextProps.tableData)
     });
   }
 
@@ -157,7 +156,7 @@ class SortableTable extends Component {
       rowsPerPage,
       order,
       page,
-      orderBy,
+      orderBy
     } = this.state;
     const { showFooter, selectHandler, cellStyles } = this.props;
 
@@ -181,14 +180,12 @@ class SortableTable extends Component {
               <TableRow
                 hover={selectHandler && true}
                 key={row.id}
-                onClick={selectHandler && (e => selectHandler(row))}
-              >
+                onClick={selectHandler && (e => selectHandler(row))}>
                 {headers.map((header, idx) => (
                   <TableCell
                     key={idx}
                     numeric={this.isHeaderNumeric(header)}
-                    style={cellStyle(header, cellStyles, row[header])}
-                  >
+                    style={cellStyle(header, cellStyles, row[header])}>
                     {row[header]}
                   </TableCell>
                 ))}

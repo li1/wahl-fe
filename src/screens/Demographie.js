@@ -17,7 +17,7 @@ import {
   PieChart,
   BarChart,
   Bar,
-  Pie,
+  Pie
 } from "recharts";
 
 const colors = {
@@ -26,12 +26,12 @@ const colors = {
   "41-50": "#8dd1e1",
   "51-60": "#82ca9d",
   "61-70": "#a4de6c",
-  "> 70": "#d0ed57",
+  "> 70": "#d0ed57"
 };
 
 const quoteColors = {
   Männeranteil: "rgba(128,203,196 ,1)",
-  Frauenanteil: "rgba(236,64,122 ,1)",
+  Frauenanteil: "rgba(236,64,122 ,1)"
 };
 
 const GenderAll = ({ data }) => (
@@ -40,14 +40,12 @@ const GenderAll = ({ data }) => (
       paddingRight: 12,
       paddingLeft: 12,
       paddingTop: 12,
-      paddingBottom: 12,
-    }}
-  >
+      paddingBottom: 12
+    }}>
     <Typography
       type="title"
       component="p"
-      style={{ marginBottom: 12, minHeight: 48 }}
-    >
+      style={{ marginBottom: 12, minHeight: 48 }}>
       Geschlechterverteilung im Bundestag (allgemein)
     </Typography>
     <ResponsiveContainer aspect={1}>
@@ -78,14 +76,12 @@ const GenderParty = ({ data }) => (
       paddingRight: 12,
       paddingLeft: 12,
       paddingTop: 12,
-      paddingBottom: 12,
-    }}
-  >
+      paddingBottom: 12
+    }}>
     <Typography
       type="title"
       component="p"
-      style={{ marginBottom: 12, minHeight: 48 }}
-    >
+      style={{ marginBottom: 12, minHeight: 48 }}>
       Geschlechterverteilung im Bundestag (pro Partei)
     </Typography>
     <ResponsiveContainer aspect={2.5}>
@@ -110,14 +106,12 @@ const DemographieAll = ({ data }) => {
         paddingRight: 12,
         paddingLeft: 12,
         paddingTop: 12,
-        paddingBottom: 12,
-      }}
-    >
+        paddingBottom: 12
+      }}>
       <Typography
         type="title"
         component="p"
-        style={{ marginBottom: 12, minHeight: 48 }}
-      >
+        style={{ marginBottom: 12, minHeight: 48 }}>
         Demographie im Bundestag (allgemein)
       </Typography>
       <ResponsiveContainer aspect={1}>
@@ -141,14 +135,12 @@ const DemographieParty = ({ data }) => (
       paddingRight: 12,
       paddingLeft: 12,
       paddingTop: 12,
-      paddingBottom: 12,
-    }}
-  >
+      paddingBottom: 12
+    }}>
     <Typography
       type="title"
       component="p"
-      style={{ marginBottom: 12, minHeight: 48 }}
-    >
+      style={{ marginBottom: 12, minHeight: 48 }}>
       Demographie im Bundestag (pro Partei)
     </Typography>
     <ResponsiveContainer aspect={2.5}>
@@ -174,14 +166,12 @@ const GenderDemographieAll = ({ data }) => {
         paddingRight: 12,
         paddingLeft: 12,
         paddingTop: 12,
-        paddingBottom: 12,
-      }}
-    >
+        paddingBottom: 12
+      }}>
       <Typography
         type="title"
         component="p"
-        style={{ marginBottom: 12, minHeight: 48 }}
-      >
+        style={{ marginBottom: 12, minHeight: 48 }}>
         Geschlechterverteilung nach Altersgruppen (allgemein)
       </Typography>
       <ResponsiveContainer aspect={2.5}>
@@ -215,7 +205,7 @@ class Demographie extends Component {
       bundestagParteienQuote: null,
       bundestagAlter: null,
       bundestagParteienAlter: null,
-      bundestagAlterQuote: null,
+      bundestagAlterQuote: null
     };
   }
 
@@ -227,7 +217,7 @@ class Demographie extends Component {
     const bundestagQuote = Object.keys(bundestagQuoteRes[0]).map(key => ({
       name: key,
       anteil: bundestagQuoteRes[0][key],
-      fill: quoteColors[key],
+      fill: quoteColors[key]
     }));
 
     const bundestagParteienQuoteReq = await fetch(
@@ -245,7 +235,7 @@ class Demographie extends Component {
     const bundestagAlter = Object.keys(bundestagAlterRes[0]).map(key => ({
       name: key,
       anteil: bundestagAlterRes[0][key],
-      fill: colors[key],
+      fill: colors[key]
     }));
 
     const bundestagParteienAlterReq = await fetch(
@@ -266,7 +256,7 @@ class Demographie extends Component {
       bundestagParteienQuote,
       bundestagAlter,
       bundestagParteienAlter,
-      bundestagAlterQuote,
+      bundestagAlterQuote
     });
   }
 
@@ -276,7 +266,7 @@ class Demographie extends Component {
       bundestagParteienQuote,
       bundestagAlter,
       bundestagParteienAlter,
-      bundestagAlterQuote,
+      bundestagAlterQuote
     } = this.state;
 
     return (

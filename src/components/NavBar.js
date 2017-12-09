@@ -12,8 +12,8 @@ import Code from "material-ui-icons/Code";
 
 const styles = theme => ({
   toolbar: {
-    backgroundColor: theme.palette.shades.light.appbar,
-  },
+    backgroundColor: theme.palette.shades.light.appbar
+  }
 });
 
 const NavBar = props => {

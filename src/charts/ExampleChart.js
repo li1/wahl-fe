@@ -7,7 +7,7 @@ import {
   YAxis,
   Area,
   Tooltip,
-  ResponsiveContainer,
+  ResponsiveContainer
 } from "recharts";
 
 import Spinner from "../components/Spinner";
@@ -34,8 +34,7 @@ class ExampleChart extends Component {
           <ResponsiveContainer width="100%" height={600}>
             <AreaChart
               data={this.state.chartData}
-              margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
-            >
+              margin={{ top: 10, right: 10, left: 10, bottom: 10 }}>
               <defs>
                 <linearGradient id="colorLinke" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#9C27B0" stopOpacity={0.8} />

@@ -30,7 +30,7 @@ class Overview extends Component {
       filteredWahlkreisData: [],
       tableTitle: "Gesamtdeutschland",
       ueberhangData: [],
-      filteredUeberhangData: [],
+      filteredUeberhangData: []
     };
   }
 
@@ -41,8 +41,8 @@ class Overview extends Component {
       ...zweitstimmengewinner.map(row => ({
         [row.land]: {
           color: colorMapping[abbreviatePartyName[row.partei]],
-          partei: row.partei,
-        },
+          partei: row.partei
+        }
       }))
     );
     this.setState({ zweitstimmengewinner: zsgPrepped });
@@ -55,8 +55,8 @@ class Overview extends Component {
       ...zweitstimmenFollower.map(row => ({
         [row.land]: {
           color: colorMapping[abbreviatePartyName[row.partei]],
-          partei: row.partei,
-        },
+          partei: row.partei
+        }
       }))
     );
     this.setState({ zweitstimmenFollower: zsfPrepped });
@@ -67,8 +67,8 @@ class Overview extends Component {
       ...erststimmengewinner.map(row => ({
         [row.land]: {
           color: colorMapping[abbreviatePartyName[row.partei]],
-          partei: row.partei,
-        },
+          partei: row.partei
+        }
       }))
     );
     this.setState({ erststimmengewinner: esgPrepped });
@@ -79,8 +79,8 @@ class Overview extends Component {
       ...erststimmenFollower.map(row => ({
         [row.land]: {
           color: colorMapping[abbreviatePartyName[row.partei]],
-          partei: row.partei,
-        },
+          partei: row.partei
+        }
       }))
     );
     this.setState({ erststimmenFollower: esfPrepped });
@@ -134,7 +134,7 @@ class Overview extends Component {
       this.setState({
         filteredWahlkreisData: wahlkreisData,
         filteredUeberhangData: ueberhangData,
-        tableTitle: "Gesamtdeutschland",
+        tableTitle: "Gesamtdeutschland"
       });
     } else {
       this.setState({
@@ -144,7 +144,7 @@ class Overview extends Component {
         filteredUeberhangData: ueberhangData.filter(
           row => row.bundesland === land
         ),
-        tableTitle: land,
+        tableTitle: land
       });
     }
   };
@@ -158,7 +158,7 @@ class Overview extends Component {
       filteredWahlkreisData,
       tableTitle,
       filteredUeberhangData,
-      tab,
+      tab
     } = this.state;
     const legend = this.createLegend(this.state[selectedOption]);
 
@@ -198,8 +198,7 @@ class Overview extends Component {
             <Typography
               type="title"
               component="h2"
-              style={{ textAlign: "center", marginTop: 12 }}
-            >
+              style={{ textAlign: "center", marginTop: 12 }}>
               {tableTitle}
             </Typography>
           </Grid>
@@ -219,8 +218,7 @@ class Overview extends Component {
                     aria-label="Optionen"
                     name="option"
                     value={selectedOption}
-                    onChange={this.updateOption}
-                  >
+                    onChange={this.updateOption}>
                     <FormControlLabel
                       value="zweitstimmengewinner"
                       control={<Radio />}
@@ -259,16 +257,15 @@ class Overview extends Component {
                       style={{
                         paddingLeft: 0,
                         paddingRight: 0,
-                        marginBottom: 0,
-                      }}
-                    >
+                        marginBottom: 0
+                      }}>
                       <span
                         style={{
                           width: 20,
                           height: 20,
                           backgroundColor: color,
                           marginRight: 12,
-                          borderRadius: "50%",
+                          borderRadius: "50%"
                         }}
                       />
                       <ListItemText
@@ -290,8 +287,7 @@ class Overview extends Component {
                 onChange={this.changeTab}
                 indicatorColor="primary"
                 textColor="primary"
-                centered
-              >
+                centered>
                 <Tab label="Wahlkreisdetails" />
                 <Tab label="Überhangmandate" />
               </Tabs>
