@@ -43,7 +43,7 @@ export class Vote extends React.Component {
 
         return (
         <div>
-            <SortableTable tableData={tableData}/>
+
             {tableData != undefined &&
             <EnhancedTable data={tableData}/> }
         </div>

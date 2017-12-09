@@ -22,9 +22,12 @@ import DeleteIcon from 'material-ui-icons/Delete';
 import FilterListIcon from 'material-ui-icons/FilterList';
 
 let counter = 0;
-function createData(name, calories, fat, carbs, protein) {
-    counter += 1;
-    return { id: counter, name, calories, fat, carbs, protein };
+function createData(jsondata) {
+    for(let i = 0; i <  jsondata.length; i++){
+        counter += 1;
+        jsondata[i]["id"] = counter;
+    }
+    return jsondata;
 }
 
 const columnData = []
@@ -171,10 +174,8 @@ class EnhancedTable extends React.Component {
 
     constructor(props, context) {
         super(props, context);
-
         this.state = {
             order: 'asc',
-            orderBy: 'calories',
             selected: [],
             data: props.data,
             page: 0,
@@ -240,6 +241,13 @@ class EnhancedTable extends React.Component {
     handleChangeRowsPerPage = event => {
         this.setState({ rowsPerPage: event.target.value });
     };
+
+    componentWillReceiveProps (nextProps) {
+       this.setState({
+           data: createData(nextProps.data),
+           selected: []
+       });
+    }
 
     isSelected = id => this.state.selected.indexOf(id) !== -1;
 
