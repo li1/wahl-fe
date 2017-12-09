@@ -4,32 +4,31 @@ import Table, {
   TableBody,
   TableCell,
   TableHead,
-  TableRow
+  TableRow,
 } from "material-ui/Table";
 import Toolbar from "material-ui/Toolbar";
 import Typography from "material-ui/Typography";
 import Paper from "material-ui/Paper";
 import Checkbox from "material-ui/Checkbox";
 
-
 const EnhancedTableHead = props => {
-  const capitalizedHeaders = props.columnData.length > 0 ? 
-    Object.keys(props.columnData[0]).map(title => title.capitalize()) : [];
+  const capitalizedHeaders =
+    props.columnData.length > 0
+      ? Object.keys(props.columnData[0]).map(title => title.capitalize())
+      : [];
 
   return (
     <TableHead>
       <TableRow>
         <TableCell padding="checkbox" />
-        {capitalizedHeaders.map((column, idx) => (
-          (column !== "Id") &&
-            <TableCell key={idx}>
-              {column}
-            </TableCell>
-        ))}
+        {capitalizedHeaders.map(
+          (column, idx) =>
+            column !== "Id" && <TableCell key={idx}>{column}</TableCell>
+        )}
       </TableRow>
     </TableHead>
   );
-}
+};
 
 class EnhancedTable extends React.Component {
   constructor(props) {
@@ -37,7 +36,7 @@ class EnhancedTable extends React.Component {
     this.state = {
       selected: [],
       data: props.data,
-      title: ""
+      title: "",
     };
   }
 
@@ -63,21 +62,18 @@ class EnhancedTable extends React.Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    nextProps.data.forEach((row, idx) => row["id"] = idx);
+    nextProps.data.forEach((row, idx) => (row["id"] = idx));
     this.setState({
       data: nextProps.data,
       title: nextProps.title,
-      selected: []
+      selected: [],
     });
   }
 
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   render() {
-    const {
-      data,
-      title
-    } = this.state;
+    const { data, title } = this.state;
 
     return (
       <Paper>
@@ -88,35 +84,33 @@ class EnhancedTable extends React.Component {
           <Table>
             <EnhancedTableHead columnData={data} />
             <TableBody>
-              {data
-                .map(n => {
-                  const isSelected = this.isSelected(n.id);
-                  var cells = [];
-                  Object.keys(n).forEach(key => {
-                    if (key !== "id") {
-                      cells.push(<TableCell key={key}>{n[key]}</TableCell>);
-                    }
-                  });
+              {data.map(n => {
+                const isSelected = this.isSelected(n.id);
+                var cells = [];
+                Object.keys(n).forEach(key => {
+                  if (key !== "id") {
+                    cells.push(<TableCell key={key}>{n[key]}</TableCell>);
+                  }
+                });
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => this.handleClick(event, n.id)}
-                      role="checkbox"
-                      aria-checked={isSelected}
-                      tabIndex={-1}
-                      key={n.id}
-                      selected={isSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox checked={isSelected} />
-                      </TableCell>
+                return (
+                  <TableRow
+                    hover
+                    onClick={event => this.handleClick(event, n.id)}
+                    role="checkbox"
+                    aria-checked={isSelected}
+                    tabIndex={-1}
+                    key={n.id}
+                    selected={isSelected}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox checked={isSelected} />
+                    </TableCell>
 
-                      {cells}
-                    </TableRow>
-                  );
-                })}
-
+                    {cells}
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
