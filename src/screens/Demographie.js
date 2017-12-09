@@ -10,7 +10,6 @@ import { abbreviatePartyName } from "../util";
 import {ResponsiveContainer,
         XAxis,
         YAxis,
-        Label,
         CartesianGrid,
         Tooltip,
         Legend,

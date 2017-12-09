@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import _ from "lodash";
 
-import {ResponsiveContainer, ScatterChart, Scatter, XAxis, YAxis, Label, CartesianGrid, Tooltip, Legend} from "recharts";
+import {ResponsiveContainer, ScatterChart, Scatter, XAxis, YAxis, Label} from "recharts";
 
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';

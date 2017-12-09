@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 
-import Paper from 'material-ui/Paper';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import Card, { CardActions, CardContent } from 'material-ui/Card';

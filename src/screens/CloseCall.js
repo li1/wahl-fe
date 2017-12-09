@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import _ from "lodash";
 
-import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import Input, { InputLabel } from 'material-ui/Input';
