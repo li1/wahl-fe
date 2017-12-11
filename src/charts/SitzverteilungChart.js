@@ -56,7 +56,7 @@ class SitzverteilungChart extends Component {
       onChartHover,
       onChartUnhover,
       onChartClick,
-      chartData
+      chartData,
     } = this.props;
 
     return (
@@ -66,40 +66,36 @@ class SitzverteilungChart extends Component {
           alignItems: "center",
           justifyContent: "center"
         }}>
-        {!chartData ? (
-          <Spinner />
-        ) : (
-          <ResponsiveContainer aspect={0.95}>
-            <PieChart renderOnlyTopHalf={true}>
-              <Pie
-                startAngle={180}
-                endAngle={0}
-                innerRadius={"2%"}
-                data={chartData}
-                nameKey={"partei"}
-                dataKey={"sitze"}
-                onMouseEnter={(data, index) =>
-                  this.onPieEnter(data, index, onChartHover)
-                }
-                onMouseLeave={(data, index) => this.onPieLeave(onChartUnhover)}
-                onClick={(data, index) =>
-                  this.onPieClick(data, index, onChartClick)
-                }
-                fill="#DDD"
-                label>
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={colorMapping[entry.partei]}
-                    opacity={this.cellOpacity(index)}
-                    strokeWidth={3}>
-                    <Label />
-                  </Cell>
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-        )}
+        <ResponsiveContainer aspect={0.95}>
+          <PieChart renderOnlyTopHalf={true}>
+            <Pie
+              startAngle={180}
+              endAngle={0}
+              innerRadius={"2%"}
+              data={chartData}
+              nameKey={"partei"}
+              dataKey={"sitze"}
+              onMouseEnter={(data, index) =>
+                this.onPieEnter(data, index, onChartHover)
+              }
+              onMouseLeave={(data, index) => this.onPieLeave(onChartUnhover)}
+              onClick={(data, index) =>
+                this.onPieClick(data, index, onChartClick)
+              }
+              fill="#DDD"
+              label>
+              {chartData.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={colorMapping[entry.partei]}
+                  opacity={this.cellOpacity(index)}
+                  strokeWidth={3}>
+                  <Label />
+                </Cell>
+              ))}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
       </div>
     );
   }

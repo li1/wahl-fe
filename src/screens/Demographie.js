@@ -6,6 +6,7 @@ import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
 
 import { abbreviatePartyName } from "../util";
+import Spinner from "../components/Spinner";
 
 import {
   ResponsiveContainer,
@@ -99,7 +100,6 @@ const GenderParty = ({ data }) => (
 );
 
 const DemographieAll = ({ data }) => {
-  console.log(data);
   return (
     <Paper
       style={{
@@ -158,43 +158,42 @@ const DemographieParty = ({ data }) => (
   </Paper>
 );
 
-const GenderDemographieAll = ({ data }) => {
-  console.log(data);
-  return (
-    <Paper
-      style={{
-        paddingRight: 12,
-        paddingLeft: 12,
-        paddingTop: 12,
-        paddingBottom: 12
-      }}>
-      <Typography
-        type="title"
-        component="p"
-        style={{ marginBottom: 12, minHeight: 48 }}>
-        Geschlechterverteilung nach Altersgruppen (allgemein)
-      </Typography>
-      <ResponsiveContainer aspect={2.5}>
-        <BarChart data={data} margin={{ bottom: 36 }}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="partei" interval={0} />
-          <YAxis unit="%" />
-          <Tooltip />
-          <Legend layout="horizontal" verticalAlign="bottom" align="center" />
-          {_.map(colors, (val, key) => (
-            <Bar
-              barSize={50}
-              key={key}
-              dataKey={key}
-              stackId={"a"}
-              fill={val}
-            />
-          ))}
-        </BarChart>
-      </ResponsiveContainer>
-    </Paper>
-  );
-};
+// const GenderDemographieAll = ({ data }) => {
+//   return (
+//     <Paper
+//       style={{
+//         paddingRight: 12,
+//         paddingLeft: 12,
+//         paddingTop: 12,
+//         paddingBottom: 12
+//       }}>
+//       <Typography
+//         type="title"
+//         component="p"
+//         style={{ marginBottom: 12, minHeight: 48 }}>
+//         Geschlechterverteilung nach Altersgruppen (allgemein)
+//       </Typography>
+//       <ResponsiveContainer aspect={2.5}>
+//         <BarChart data={data} margin={{ bottom: 36 }}>
+//           <CartesianGrid strokeDasharray="3 3" />
+//           <XAxis dataKey="partei" interval={0} />
+//           <YAxis unit="%" />
+//           <Tooltip />
+//           <Legend layout="horizontal" verticalAlign="bottom" align="center" />
+//           {_.map(colors, (val, key) => (
+//             <Bar
+//               barSize={50}
+//               key={key}
+//               dataKey={key}
+//               stackId={"a"}
+//               fill={val}
+//             />
+//           ))}
+//         </BarChart>
+//       </ResponsiveContainer>
+//     </Paper>
+//   );
+// };
 
 class Demographie extends Component {
   constructor(props) {
@@ -209,7 +208,7 @@ class Demographie extends Component {
     };
   }
 
-  async componentDidMount() {
+  async loadQuote() {
     const bundestagQuoteReq = await fetch(
       "http://localhost:3000/bundestagQuote"
     );
@@ -220,6 +219,10 @@ class Demographie extends Component {
       fill: quoteColors[key]
     }));
 
+    this.setState({bundestagQuote})
+  }
+
+  async loadBundestagParteienQuote() {
     const bundestagParteienQuoteReq = await fetch(
       "http://localhost:3000/bundestagParteienQuote"
     );
@@ -228,6 +231,10 @@ class Demographie extends Component {
       row => (row.partei = abbreviatePartyName[row.partei])
     );
 
+    this.setState({bundestagParteienQuote});
+  }
+
+  async loadBundestagAlter () {
     const bundestagAlterReq = await fetch(
       "http://localhost:3000/bundestagAlter"
     );
@@ -238,6 +245,10 @@ class Demographie extends Component {
       fill: colors[key]
     }));
 
+    this.setState({bundestagAlter})
+  }
+
+  async loadBundestagParteienAlter () {
     const bundestagParteienAlterReq = await fetch(
       "http://localhost:3000/bundestagParteienAlter"
     );
@@ -246,18 +257,28 @@ class Demographie extends Component {
       row => (row.partei = abbreviatePartyName[row.partei])
     );
 
-    const bundestagAlterQuoteReq = await fetch(
-      "http://localhost:3000/bundestagAlterQuote"
-    );
-    const bundestagAlterQuote = await bundestagAlterQuoteReq.json();
+    this.setState({bundestagParteienAlter})
+  }
 
-    this.setState({
-      bundestagQuote,
-      bundestagParteienQuote,
-      bundestagAlter,
-      bundestagParteienAlter,
-      bundestagAlterQuote
-    });
+  // async loadBundestagAlterQuote () {
+  //   const bundestagAlterQuoteReq = await fetch(
+  //     "http://localhost:3000/bundestagAlterQuote"
+  //   );
+  //   const bundestagAlterQuote = await bundestagAlterQuoteReq.json();
+
+  //   this.setState({bundestagAlterQuote})
+  // }
+
+  async componentDidMount() {
+    this.loadBundestagParteienQuote();
+
+    this.loadQuote();
+
+    this.loadBundestagParteienAlter();
+
+    this.loadBundestagAlter();
+
+    // this.loadBundestagAlterQuote();
   }
 
   render() {
@@ -266,8 +287,8 @@ class Demographie extends Component {
       bundestagParteienQuote,
       bundestagAlter,
       bundestagParteienAlter,
-      bundestagAlterQuote
-    } = this.state;
+      // bundestagAlterQuote
+    } = this.state
 
     return (
       <Grid container spacing={24}>
@@ -282,53 +303,66 @@ class Demographie extends Component {
         </Grid>
         <Grid item md={9} />
 
-        {bundestagAlter &&
-          bundestagParteienAlter && (
-            <Grid item xs={12}>
-              <Grid container>
-                <Grid item md={1} />
-                <Grid item xs={12} md={3}>
-                  <GenderAll data={bundestagQuote} />
-                </Grid>
-                <Grid item xs={12} md={7}>
-                  <GenderParty data={bundestagParteienQuote} />
-                </Grid>
-                <Grid item md={1} />
-              </Grid>
+        <Grid item xs={12}>
+          <Grid container>
+            <Grid item md={1} />
+            <Grid item xs={12} md={3}>
+              {bundestagQuote ? 
+                <GenderAll data={bundestagQuote} />
+                :
+                <Spinner />
+              }
             </Grid>
-          )}
-
-        {bundestagQuote &&
-          bundestagParteienQuote && (
-            <Grid item xs={12}>
-              <Grid container>
-                <Grid item md={1} />
-                <Grid item xs={12} md={3}>
-                  <DemographieAll data={bundestagAlter} />
-                </Grid>
-                <Grid item xs={12} md={7}>
-                  <DemographieParty data={bundestagParteienAlter} />
-                </Grid>
-                <Grid item md={1} />
-              </Grid>
+            <Grid item xs={12} md={7}>
+              {bundestagParteienQuote ?
+                <GenderParty data={bundestagParteienQuote} />
+                :
+                <Spinner />
+              }
             </Grid>
-          )}
-
-        {bundestagAlterQuote /*&& bundestagParteienQuote*/ && (
-          <Grid item xs={12}>
-            <Grid container>
-              <Grid item md={1} />
-              <Grid item xs={12} md={3}>
-                <GenderDemographieAll data={bundestagAlterQuote} />
-              </Grid>
-              <Grid item xs={12} md={7}>
-                Hallo?
-                {/*<DemographieParty data={ bundestagParteienAlter } />*/}
-              </Grid>
-              <Grid item md={1} />
-            </Grid>
+            <Grid item md={1} />
           </Grid>
-        )}
+        </Grid>
+
+        <Grid item xs={12}>
+          <Grid container>
+            <Grid item md={1} />
+            <Grid item xs={12} md={3}>
+              {bundestagAlter ?
+                <DemographieAll data={bundestagAlter} />
+                :
+                <Spinner />
+              }
+            </Grid>
+            <Grid item xs={12} md={7}>
+            {bundestagParteienAlter ?
+              <DemographieParty data={bundestagParteienAlter} />
+              :
+              <Spinner />
+            }
+            </Grid>
+            <Grid item md={1} />
+          </Grid>
+        </Grid>
+
+      {/*
+        <Grid item xs={12}>
+          <Grid container>
+            <Grid item md={1} />
+            <Grid item xs={12} md={3}>
+            {bundestagAlterQuote ?
+              <GenderDemographieAll data={bundestagAlterQuote} />
+              :
+              <Spinner />
+            }
+            </Grid>
+            <Grid item xs={12} md={7}>
+              {<DemographieParty data={ bundestagParteienAlter } />}
+            </Grid>
+            <Grid item md={1} />
+          </Grid>
+        </Grid>*/}
+
       </Grid>
     );
   }
