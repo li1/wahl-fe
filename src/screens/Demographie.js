@@ -219,7 +219,7 @@ class Demographie extends Component {
       fill: quoteColors[key]
     }));
 
-    this.setState({bundestagQuote})
+    this.setState({ bundestagQuote });
   }
 
   async loadBundestagParteienQuote() {
@@ -231,10 +231,10 @@ class Demographie extends Component {
       row => (row.partei = abbreviatePartyName[row.partei])
     );
 
-    this.setState({bundestagParteienQuote});
+    this.setState({ bundestagParteienQuote });
   }
 
-  async loadBundestagAlter () {
+  async loadBundestagAlter() {
     const bundestagAlterReq = await fetch(
       "http://localhost:3000/bundestagAlter"
     );
@@ -245,10 +245,10 @@ class Demographie extends Component {
       fill: colors[key]
     }));
 
-    this.setState({bundestagAlter})
+    this.setState({ bundestagAlter });
   }
 
-  async loadBundestagParteienAlter () {
+  async loadBundestagParteienAlter() {
     const bundestagParteienAlterReq = await fetch(
       "http://localhost:3000/bundestagParteienAlter"
     );
@@ -257,7 +257,7 @@ class Demographie extends Component {
       row => (row.partei = abbreviatePartyName[row.partei])
     );
 
-    this.setState({bundestagParteienAlter})
+    this.setState({ bundestagParteienAlter });
   }
 
   // async loadBundestagAlterQuote () {
@@ -286,9 +286,9 @@ class Demographie extends Component {
       bundestagQuote,
       bundestagParteienQuote,
       bundestagAlter,
-      bundestagParteienAlter,
+      bundestagParteienAlter
       // bundestagAlterQuote
-    } = this.state
+    } = this.state;
 
     return (
       <Grid container spacing={24}>
@@ -307,18 +307,18 @@ class Demographie extends Component {
           <Grid container>
             <Grid item md={1} />
             <Grid item xs={12} md={3}>
-              {bundestagQuote ? 
+              {bundestagQuote ? (
                 <GenderAll data={bundestagQuote} />
-                :
+              ) : (
                 <Spinner />
-              }
+              )}
             </Grid>
             <Grid item xs={12} md={7}>
-              {bundestagParteienQuote ?
+              {bundestagParteienQuote ? (
                 <GenderParty data={bundestagParteienQuote} />
-                :
+              ) : (
                 <Spinner />
-              }
+              )}
             </Grid>
             <Grid item md={1} />
           </Grid>
@@ -328,24 +328,24 @@ class Demographie extends Component {
           <Grid container>
             <Grid item md={1} />
             <Grid item xs={12} md={3}>
-              {bundestagAlter ?
+              {bundestagAlter ? (
                 <DemographieAll data={bundestagAlter} />
-                :
+              ) : (
                 <Spinner />
-              }
+              )}
             </Grid>
             <Grid item xs={12} md={7}>
-            {bundestagParteienAlter ?
-              <DemographieParty data={bundestagParteienAlter} />
-              :
-              <Spinner />
-            }
+              {bundestagParteienAlter ? (
+                <DemographieParty data={bundestagParteienAlter} />
+              ) : (
+                <Spinner />
+              )}
             </Grid>
             <Grid item md={1} />
           </Grid>
         </Grid>
 
-      {/*
+        {/*
         <Grid item xs={12}>
           <Grid container>
             <Grid item md={1} />
@@ -362,7 +362,6 @@ class Demographie extends Component {
             <Grid item md={1} />
           </Grid>
         </Grid>*/}
-
       </Grid>
     );
   }

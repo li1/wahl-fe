@@ -13,6 +13,7 @@ import Tabs, { Tab } from "material-ui/Tabs";
 import Germany from "../charts/Germany";
 import WahlkreisDetail from "../components/WahlkreisDetail";
 import SortableTable from "../components/SortableTable";
+import Spinner from "../components/Spinner";
 import { abbreviatePartyName, colorMapping } from "../util";
 
 class Overview extends Component {
@@ -189,18 +190,24 @@ class Overview extends Component {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <div style={{ animation: "fadein 3s" }}>
-              <Germany
-                data={this.state[selectedOption] || {}}
-                onClickHandler={this.filterTables}
-              />
-            </div>
-            <Typography
-              type="title"
-              component="h2"
-              style={{ textAlign: "center", marginTop: 12 }}>
-              {tableTitle}
-            </Typography>
+            {this.state[selectedOption] ? (
+              <div>
+                <div style={{ animation: "fadein 3s" }}>
+                  <Germany
+                    data={this.state[selectedOption] || {}}
+                    onClickHandler={this.filterTables}
+                  />
+                </div>
+                <Typography
+                  type="title"
+                  component="h2"
+                  style={{ textAlign: "center", marginTop: 12 }}>
+                  {tableTitle}
+                </Typography>
+              </div>
+            ) : (
+              <Spinner />
+            )}
           </Grid>
 
           <Grid item xs={12} lg={3}>

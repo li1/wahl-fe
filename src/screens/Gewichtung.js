@@ -20,7 +20,6 @@ import Select from "material-ui/Select";
 import Tabs, { Tab } from "material-ui/Tabs";
 
 import SortableTable from "../components/SortableTable";
-import Spinner from "../components/Spinner";
 
 const diffStyle = {
   "Veränderung [in %]": {

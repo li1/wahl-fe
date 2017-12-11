@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { PieChart, Pie, ResponsiveContainer, Cell, Label } from "recharts";
 
-import Spinner from "../components/Spinner";
 import { colorMapping } from "../util";
 
 class SitzverteilungChart extends Component {
@@ -56,7 +55,7 @@ class SitzverteilungChart extends Component {
       onChartHover,
       onChartUnhover,
       onChartClick,
-      chartData,
+      chartData
     } = this.props;
 
     return (
