@@ -86,7 +86,6 @@ class Bundestag extends Component {
     //fetch sitzverteilung
     const res = await fetch("http://localhost:3000/sitzverteilung");
     const chartData = await res.json();
-    console.log(chartData);
     chartData.map(row => (row.partei = abbreviatePartyName[row.partei]));
     this.setState({
       chartData: chartData,

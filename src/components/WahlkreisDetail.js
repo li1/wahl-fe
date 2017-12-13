@@ -33,8 +33,6 @@ class WahlkreisDetail extends Component {
       );
       const data = await req.json();
 
-      console.log(data);
-
       const wahlkreisName = data[0].wahlkreis;
 
       const erst = _.map(data, row =>

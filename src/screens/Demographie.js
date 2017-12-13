@@ -5,7 +5,7 @@ import Paper from "material-ui/Paper";
 import Grid from "material-ui/Grid";
 import Typography from "material-ui/Typography";
 
-import { abbreviatePartyName } from "../util";
+import { abbreviatePartyName, expandPartyName } from "../util";
 import Spinner from "../components/Spinner";
 
 import {
@@ -32,10 +32,11 @@ const colors = {
 
 const quoteColors = {
   Männeranteil: "rgba(128,203,196 ,1)",
-  Frauenanteil: "rgba(236,64,122 ,1)"
+  Frauenanteil: "rgba(236,64,122 ,1)",
+  ["Keine Angabe"]: "#888",
 };
 
-const GenderAll = ({ data }) => (
+const GChart = ({ data, title }) => (
   <Paper
     style={{
       paddingRight: 12,
@@ -47,7 +48,7 @@ const GenderAll = ({ data }) => (
       type="title"
       component="p"
       style={{ marginBottom: 12, minHeight: 48 }}>
-      Geschlechterverteilung im Bundestag (allgemein)
+      {title}
     </Typography>
     <ResponsiveContainer aspect={1}>
       <PieChart>
@@ -71,7 +72,7 @@ const GenderAll = ({ data }) => (
 //   </g>
 // )
 
-const GenderParty = ({ data }) => (
+const PChart = ({ data, title }) => (
   <Paper
     style={{
       paddingRight: 12,
@@ -83,53 +84,24 @@ const GenderParty = ({ data }) => (
       type="title"
       component="p"
       style={{ marginBottom: 12, minHeight: 48 }}>
-      Geschlechterverteilung im Bundestag (pro Partei)
+      {title}
     </Typography>
     <ResponsiveContainer aspect={2.5}>
       <BarChart data={data} margin={{ bottom: 36 }}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="partei" interval={0} />
-        <YAxis unit="%" />
+        <YAxis type="number" unit="%" domain={[0, 100]} />
         <Tooltip />
         <Legend layout="horizontal" verticalAlign="bottom" align="center" />
         <Bar dataKey="Männeranteil" fill="rgba(128,203,196 ,1)" />
         <Bar dataKey="Frauenanteil" fill="rgba(236,64,122 ,1)" />
+        { data[0]["Keine Angabe"] && <Bar dataKey="Keine Angabe" fill="#888" /> }
       </BarChart>
     </ResponsiveContainer>
   </Paper>
 );
 
-const DemographieAll = ({ data }) => {
-  return (
-    <Paper
-      style={{
-        paddingRight: 12,
-        paddingLeft: 12,
-        paddingTop: 12,
-        paddingBottom: 12
-      }}>
-      <Typography
-        type="title"
-        component="p"
-        style={{ marginBottom: 12, minHeight: 48 }}>
-        Demographie im Bundestag (allgemein)
-      </Typography>
-      <ResponsiveContainer aspect={1}>
-        <PieChart>
-          <Pie label data={data} innerRadius="20%" dataKey="anteil" />
-          <Legend
-            iconSize={15}
-            layout="horizontal"
-            verticalAlign="bottom"
-            align="center"
-          />
-        </PieChart>
-      </ResponsiveContainer>
-    </Paper>
-  );
-};
-
-const DemographieParty = ({ data }) => (
+const APChart = ({ data, title }) => (
   <Paper
     style={{
       paddingRight: 12,
@@ -141,13 +113,13 @@ const DemographieParty = ({ data }) => (
       type="title"
       component="p"
       style={{ marginBottom: 12, minHeight: 48 }}>
-      Demographie im Bundestag (pro Partei)
+      {title}
     </Typography>
     <ResponsiveContainer aspect={2.5}>
       <BarChart data={data} margin={{ bottom: 36 }}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="partei" interval={0} />
-        <YAxis unit="%" />
+        <YAxis type="number" domain={[0, 100.5]} unit="%" />
         <Tooltip />
         <Legend layout="horizontal" verticalAlign="bottom" align="center" />
         {_.map(colors, (val, key) => (
@@ -158,137 +130,68 @@ const DemographieParty = ({ data }) => (
   </Paper>
 );
 
-// const GenderDemographieAll = ({ data }) => {
-//   return (
-//     <Paper
-//       style={{
-//         paddingRight: 12,
-//         paddingLeft: 12,
-//         paddingTop: 12,
-//         paddingBottom: 12
-//       }}>
-//       <Typography
-//         type="title"
-//         component="p"
-//         style={{ marginBottom: 12, minHeight: 48 }}>
-//         Geschlechterverteilung nach Altersgruppen (allgemein)
-//       </Typography>
-//       <ResponsiveContainer aspect={2.5}>
-//         <BarChart data={data} margin={{ bottom: 36 }}>
-//           <CartesianGrid strokeDasharray="3 3" />
-//           <XAxis dataKey="partei" interval={0} />
-//           <YAxis unit="%" />
-//           <Tooltip />
-//           <Legend layout="horizontal" verticalAlign="bottom" align="center" />
-//           {_.map(colors, (val, key) => (
-//             <Bar
-//               barSize={50}
-//               key={key}
-//               dataKey={key}
-//               stackId={"a"}
-//               fill={val}
-//             />
-//           ))}
-//         </BarChart>
-//       </ResponsiveContainer>
-//     </Paper>
-//   );
-// };
-
 class Demographie extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      bundestagQuote: null,
-      bundestagParteienQuote: null,
-      bundestagAlter: null,
-      bundestagParteienAlter: null,
-      bundestagAlterQuote: null
+      kg: null,
+      kp: null,
+      bg: null,
+      bp: null,
+      abp: null,
+      akp: null,
     };
   }
 
-  async loadQuote() {
-    const bundestagQuoteReq = await fetch(
-      "http://localhost:3000/bundestagQuote"
-    );
-    const bundestagQuoteRes = await bundestagQuoteReq.json();
-    const bundestagQuote = Object.keys(bundestagQuoteRes[0]).map(key => ({
+  async componentDidMount() {
+    const kgRes = await (await fetch("http://localhost:3000/quote/kg")).json();
+    const kg = Object.keys(kgRes[0]).map(key => ({
       name: key,
-      anteil: bundestagQuoteRes[0][key],
+      anteil: kgRes[0][key],
       fill: quoteColors[key]
     }));
+    this.setState({ kg });
 
-    this.setState({ bundestagQuote });
-  }
+    const kp = await (await fetch("http://localhost:3000/quote/kp")).json();
+    kp.forEach(row => (row.partei = abbreviatePartyName[row.partei]));
+    _.remove(kp, row => (!expandPartyName[row.partei]));
+    this.setState({ kp });
 
-  async loadBundestagParteienQuote() {
-    const bundestagParteienQuoteReq = await fetch(
-      "http://localhost:3000/bundestagParteienQuote"
-    );
-    const bundestagParteienQuote = await bundestagParteienQuoteReq.json();
-    bundestagParteienQuote.forEach(
-      row => (row.partei = abbreviatePartyName[row.partei])
-    );
+    const akp = await (await fetch("http://localhost:3000/age/akp")).json();
+    akp.forEach(row => (row.partei = abbreviatePartyName[row.partei]));
+    _.remove(akp, row => (!expandPartyName[row.partei]));
+    this.setState({ akp });
 
-    this.setState({ bundestagParteienQuote });
-  }
 
-  async loadBundestagAlter() {
-    const bundestagAlterReq = await fetch(
-      "http://localhost:3000/bundestagAlter"
-    );
-    const bundestagAlterRes = await bundestagAlterReq.json();
-    const bundestagAlter = Object.keys(bundestagAlterRes[0]).map(key => ({
+    const bgRes = await (await fetch("http://localhost:3000/quote/bg")).json();
+    const bg = Object.keys(bgRes[0]).map(key => ({
       name: key,
-      anteil: bundestagAlterRes[0][key],
-      fill: colors[key]
+      anteil: bgRes[0][key],
+      fill: quoteColors[key]
     }));
+    this.setState({ bg });
 
-    this.setState({ bundestagAlter });
-  }
+    const bp = await (await fetch("http://localhost:3000/quote/bp")).json();
+    bp.forEach(row => (row.partei = abbreviatePartyName[row.partei]));
+    this.setState({ bp });
 
-  async loadBundestagParteienAlter() {
-    const bundestagParteienAlterReq = await fetch(
-      "http://localhost:3000/bundestagParteienAlter"
-    );
-    const bundestagParteienAlter = await bundestagParteienAlterReq.json();
-    bundestagParteienAlter.forEach(
-      row => (row.partei = abbreviatePartyName[row.partei])
-    );
-
-    this.setState({ bundestagParteienAlter });
-  }
-
-  // async loadBundestagAlterQuote () {
-  //   const bundestagAlterQuoteReq = await fetch(
-  //     "http://localhost:3000/bundestagAlterQuote"
-  //   );
-  //   const bundestagAlterQuote = await bundestagAlterQuoteReq.json();
-
-  //   this.setState({bundestagAlterQuote})
-  // }
-
-  async componentDidMount() {
-    this.loadBundestagParteienQuote();
-
-    this.loadQuote();
-
-    this.loadBundestagParteienAlter();
-
-    this.loadBundestagAlter();
-
-    // this.loadBundestagAlterQuote();
+    const abp = await (await fetch("http://localhost:3000/age/bp")).json();
+    abp.forEach(row => (row.partei = abbreviatePartyName[row.partei]));
+    this.setState({ abp });
   }
 
   render() {
     const {
-      bundestagQuote,
-      bundestagParteienQuote,
-      bundestagAlter,
-      bundestagParteienAlter
-      // bundestagAlterQuote
+      bg,
+      bp,
+      akp,
+      abp,
+      kg,
+      kp
     } = this.state;
+
+    console.log(bg, bp, kg, kp, akp, abp);
 
     return (
       <Grid container spacing={24}>
@@ -305,63 +208,62 @@ class Demographie extends Component {
 
         <Grid item xs={12}>
           <Grid container>
-            <Grid item md={1} />
+            <Grid item md={3} />
             <Grid item xs={12} md={3}>
-              {bundestagQuote ? (
-                <GenderAll data={bundestagQuote} />
+              {kg ? (
+                <GChart data={kg} title="Geschlechterverteilung der Kandidaten" />
               ) : (
                 <Spinner />
               )}
             </Grid>
-            <Grid item xs={12} md={7}>
-              {bundestagParteienQuote ? (
-                <GenderParty data={bundestagParteienQuote} />
+            <Grid item xs={12} md={3}>
+              {bg ? (
+                <GChart data={bg} title="Geschlechterverteilung der Abgeordneten" />
               ) : (
                 <Spinner />
               )}
             </Grid>
-            <Grid item md={1} />
+            <Grid item md={3}/>
           </Grid>
         </Grid>
 
         <Grid item xs={12}>
           <Grid container>
-            <Grid item md={1} />
-            <Grid item xs={12} md={3}>
-              {bundestagAlter ? (
-                <DemographieAll data={bundestagAlter} />
+            <Grid item xs={12} md={6}>
+              {kp ? (
+                <PChart data={kp} title="Geschlechterverteilung der Kandidaten (pro Bundestagspartei)"/>
+              ) : (
+                <Spinner />
+              )}
+            </Grid>          
+            <Grid item xs={12} md={6}>
+              {bp ? (
+                <PChart data={bp} title="Geschlechterverteilung der Abgeordneten (pro Partei)"/>
               ) : (
                 <Spinner />
               )}
             </Grid>
-            <Grid item xs={12} md={7}>
-              {bundestagParteienAlter ? (
-                <DemographieParty data={bundestagParteienAlter} />
-              ) : (
-                <Spinner />
-              )}
-            </Grid>
-            <Grid item md={1} />
           </Grid>
         </Grid>
 
-        {/*
         <Grid item xs={12}>
           <Grid container>
-            <Grid item md={1} />
-            <Grid item xs={12} md={3}>
-            {bundestagAlterQuote ?
-              <GenderDemographieAll data={bundestagAlterQuote} />
-              :
-              <Spinner />
-            }
+            <Grid item xs={12} md={6}>
+              {akp ? (
+                <APChart data={akp} title="Demographie der Kandidaten (pro Partei)"/>
+              ) : (
+                <Spinner />
+              )}
+            </Grid>          
+            <Grid item xs={12} md={6}>
+              {abp ? (
+                <APChart data={abp} title="Demographie der Abgeordneten (pro Partei)"/>
+              ) : (
+                <Spinner />
+              )}
             </Grid>
-            <Grid item xs={12} md={7}>
-              {<DemographieParty data={ bundestagParteienAlter } />}
-            </Grid>
-            <Grid item md={1} />
           </Grid>
-        </Grid>*/}
+        </Grid>
       </Grid>
     );
   }
