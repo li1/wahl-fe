@@ -33,9 +33,9 @@ export class Vote extends React.Component {
         this.sendingVoteToBackend = this.sendingVoteToBackend.bind(this);
     }
 
-    async componentDidMount() {
-        const kandidaten = await fetch("http://localhost:3000/wahlkreisdirektkandidaten/1");
-        const parteien = await fetch("http://localhost:3000/wahlkreisparteien/1");
+    async setstatus(wahlkreis) {
+        const kandidaten = await fetch("http://localhost:3000/wahlkreisdirektkandidaten/" + wahlkreis);
+        const parteien = await fetch("http://localhost:3000/wahlkreisparteien/" + wahlkreis);
         const tableDataParties = await parteien.json();
         const tableData = await kandidaten.json();
 
@@ -53,6 +53,7 @@ export class Vote extends React.Component {
         if (res.status === 'OK') {
             this.setState({wahlkreis: res.WahlkreisID});
         }
+        await this.setstatus(res.WahlkreisID);
     }
 
     handleStimmenAuswahl = (title, selection) => {
