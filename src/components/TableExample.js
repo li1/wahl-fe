@@ -48,10 +48,11 @@ class EnhancedTable extends React.Component {
             data: createData(props.data),
             title: props.title
         };
+        this.handleClick = this.handleClick.bind(this);
     }
 
     handleClick = (event, id) => {
-        const {selected} = this.state;
+        const {data, selected, title} = this.state;
         const selectedIndex = selected.indexOf(id);
         let newSelected = [];
 
@@ -67,8 +68,8 @@ class EnhancedTable extends React.Component {
                 selected.slice(selectedIndex + 1)
             );
         }
-
         this.setState({selected: newSelected});
+        this.props.onSelectionChange(title, data.filter(n => newSelected.indexOf(n.id) !== -1));
     };
 
     componentWillReceiveProps(nextProps) {

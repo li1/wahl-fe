@@ -21,7 +21,8 @@ const style = {
 
 
 let wahlkreis = -1;
-
+let erststimmenselection = [];
+let zweitstimmenselection = [];
 export class Vote extends React.Component {
 
     constructor (props) {
@@ -51,6 +52,12 @@ export class Vote extends React.Component {
         }
     }
 
+    handleStimmenAuswahl = (title, selection) => {
+       if (title === "Erststimme")
+           erststimmenselection = selection;
+       else zweitstimmenselection = selection;
+    }
+
     render () {
 
         const {tableData, tableDataParties, wahlkreis} = this.state;
@@ -74,14 +81,15 @@ export class Vote extends React.Component {
                 <Grid item xs={8} width="stretch">
                     <Paper>
                         {tableData != undefined &&
-                        <EnhancedTable data={tableData} title="Erststimme"/>}
+                        <EnhancedTable data={tableData} title="Erststimme" onSelectionChange={this.handleStimmenAuswahl}/>}
                     </Paper>
                 </Grid>
                 <Grid item xs={3}>
                     <Paper>
-                        <EnhancedTable data={tableDataParties} title="Zweitstimme"/>
+                        <EnhancedTable data={tableDataParties} title="Zweitstimme" onSelectionChange={this.handleStimmenAuswahl}/>
                     </Paper>
                 </Grid>
+                <button onClick={() => alert (erststimmenselection)}> Wählen!</button>
             </Grid>
         )
     }
