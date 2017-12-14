@@ -9,7 +9,7 @@ import Demographie from "./screens/Demographie";
 import NavBar from "./components/NavBar"
 import Vote from "./screens/Vote"
 
-import { Route, Switch } from "react-router-dom"
+import { Route, Switch } from "react-router-dom";
 
 import { MuiThemeProvider} from 'material-ui/styles';
 import theme from "./theme";

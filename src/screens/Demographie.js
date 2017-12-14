@@ -33,7 +33,7 @@ const colors = {
 const quoteColors = {
   Männeranteil: "rgba(128,203,196 ,1)",
   Frauenanteil: "rgba(236,64,122 ,1)",
-  ["Keine Angabe"]: "#888",
+  "Keine Angabe": "#888",
 };
 
 const GChart = ({ data, title }) => (
