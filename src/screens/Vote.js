@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, View, Text} from 'react';
 import {
     Table,
     TableBody,
@@ -6,6 +6,7 @@ import {
     TableHeaderColumn,
     TableRow,
     TableRowColumn,
+
 } from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
 
@@ -28,7 +29,7 @@ export class Vote extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {tableData: [], tableDataParties: [], wahlkreis: -1, input: "", voted : false};
+        this.state = {tableData: [], tableDataParties: [], wahlkreis: -1, input: "", voted: false, invalidCode: false};
         this.btnTapped = this.btnTapped.bind(this);
         this.sendingVoteToBackend = this.sendingVoteToBackend.bind(this);
     }
@@ -44,15 +45,14 @@ export class Vote extends React.Component {
     }
 
     async btnTapped() {
-        const {code } = this.state;
-        //this.setState({code: "6f7feefa-d717-4f63-9a15-97fa09c67c1f"});
-        //let code =  "6f7feefa-d717-4f63-9a15-97fa09c67c1f";
-        const response = await fetch("http://localhost:3000/votingcode/" + code );
+        const {code} = this.state;
+        const response = await fetch("http://localhost:3000/votingcode/" + code);
         const res = await response.json();
         console.log(res);
         if (res.status === 'OK') {
             this.setState({wahlkreis: res.WahlkreisID});
         }
+        else (this.setState({invalidCode: true}));
         await this.setstatus(res.WahlkreisID);
     }
 
@@ -62,12 +62,12 @@ export class Vote extends React.Component {
         else zweitstimmenselection = selection;
     }
 
-   async sendingVoteToBackend () {
-        const {code } = this.state;
+    async sendingVoteToBackend() {
+        const {code} = this.state;
         var json = '{ "ErststimmenAuswahl": [' +
             erststimmenselection.map(kandidat => '"' + kandidat.kandidatid + '"').join(",") + '], "ZweitstimmenAuswahl" : [' +
-            zweitstimmenselection.map(partei => '"' + partei.name + '"').join(",") + '], "code" : "' + code + '" }' ;
-       const voteresult =  await fetch('http://localhost:3000/vote', {
+            zweitstimmenselection.map(partei => '"' + partei.name + '"').join(",") + '], "code" : "' + code + '" }';
+        const voteresult = await fetch('http://localhost:3000/vote', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -75,35 +75,45 @@ export class Vote extends React.Component {
             },
             body: json
         });
-       console.log(voteresult);
-       const response = await voteresult.json();
-       if (response.status === "OK") {
-           this.setState({voted: true});
-       }
+        console.log(voteresult);
+        const response = await voteresult.json();
+        if (response.status === "OK") {
+            this.setState({voted: true});
+        }
         alert(response + "test");
     }
 
     handleChange = (votingcode) => {
-       this.setState({code : votingcode.target.value}) ;
+        this.setState({code: votingcode.target.value});
     }
 
     render() {
 
-        const {tableData, tableDataParties, wahlkreis, voted} = this.state;
+
+        const {tableData, tableDataParties, wahlkreis, voted, invalidCode} = this.state;
 
         if (voted) {
             return (
-                <Paper>
-                    <h1>Sie haben Ihre Stimme im Wahlkreis {wahlkreis} erfolgreich abgegeben.</h1>
+                <div>
+                    <Paper>
+                        <h1>Sie haben Ihre Stimme im Wahlkreis {wahlkreis} erfolgreich abgegeben.</h1>
                     </Paper>
+                </div>
             )
         }
 
         if (wahlkreis === -1) {
             return (
                 <div>
-                    <input type="text" onChange={this.handleChange}/>
-                    <button onClick={this.btnTapped}>Check Code</button>
+                    <Grid item md={3} />
+                    <Grid item xs={12} md={4}>
+                        <Paper>
+                            <input type="text" onChange={this.handleChange}/>
+                            <button onClick={this.btnTapped}>Check Code</button>
+                            {invalidCode && <h3>Invalid Code</h3>}
+                        </Paper>
+                    </Grid>
+                    <Grid item md={3} />
                 </div>
             )
         }
