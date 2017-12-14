@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
 import { withRouter } from 'react-router'
 
+import Paper from 'material-ui/Paper';
+import Card, { CardContent } from "material-ui/Card";
 import Grid from 'material-ui/Grid';
 
 import Typography from 'material-ui/Typography';
 import EnhancedTable from '../components/TableExample';
+import Spinner from "../components/Spinner";
+import Button from "material-ui/Button";
 
 let erststimmenselection = [];
 let zweitstimmenselection = [];
@@ -47,24 +51,34 @@ export class Vote extends Component {
     }
 
     async sendingVoteToBackend() {
-        const {code} = this.state;
-        var json = '{ "ErststimmenAuswahl": [' +
-            erststimmenselection.map(kandidat => '"' + kandidat.kandidatid + '"').join(",") + '], "ZweitstimmenAuswahl" : [' +
-            zweitstimmenselection.map(partei => '"' + partei.name + '"').join(",") + '], "code" : "' + code + '" }';
-        const voteresult = await fetch('http://localhost:3000/vote', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: json
-        });
-        console.log(voteresult);
-        const response = await voteresult.json();
-        if (response.status === "OK") {
-            this.setState({voted: true});
+        const {code, voted} = this.state;
+
+        if (!voted ) {
+            var json = '{ "ErststimmenAuswahl": [' +
+                erststimmenselection.map(kandidat => '"' + kandidat.kandidatid + '"').join(",") + '], "ZweitstimmenAuswahl" : [' +
+                zweitstimmenselection.map(partei => '"' + partei.name + '"').join(",") + '], "code" : "' + code + '" }';
+            const voteresult = fetch('http://localhost:3000/vote', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: json
+            });
+
+            this.setState({isVoting: true});
+            const response = await (await voteresult).json();
+
+            this.setState({isVoting: false});
+
+            if (response.status === "OK") {
+                this.setState({voted: true});
+            } else {
+                this.setState({voted: true});
+                alert("Bei der Abgabe Ihrer Stimme ist ein Fehler aufgetreten. Bitte melden Sie sich beim Leiter Ihres Wahlbüros.");
+                this.props.history.push("/overview")
+            }
         }
-        alert(response + "test");
     }
 
     handleChange = (votingcode) => {
@@ -73,59 +87,131 @@ export class Vote extends Component {
 
     render() {
 
+        const {tableData, tableDataParties, wahlkreis, voted, invalidCode, isVoting} = this.state;
 
-        const {tableData, tableDataParties, wahlkreis, voted, invalidCode} = this.state;
-
-        if (voted) {
+        if (isVoting || voted) {
             return (
-                <div>
-                    <Paper>
-                        <h1>Sie haben Ihre Stimme im Wahlkreis {wahlkreis} erfolgreich abgegeben.</h1>
-                    </Paper>
-                </div>
+                <Grid container spacing={24}>
+                    <Grid item md={4} />
+                    <Grid item xs={12} md={4}>
+                        <div style={{paddingTop: 24, textAlign: "center"}}>
+                            <Typography type="headline" component="h2">
+                              Vielen Dank für die Abgabe Ihrer Stimme.
+                            </Typography>
+                            
+                            {isVoting && 
+                                <div>
+                                    <Typography component="p">
+                                      Ihre Stimmabgabe wird verarbeitet...
+                                    </Typography>
+                                    <Typography component="p">
+                                        Sie können die Wahlkabine verlassen.
+                                    </Typography>
+
+                                    <Spinner />
+                                </div>
+                            }
+
+                            { voted && 
+                                <div>
+                                    <Typography component="p">
+                                      Ihre Stimme wurde erfolgreich übertragen.
+                                    </Typography>
+                                    <Typography component="p">
+                                        Sie können die Wahlkabine verlassen.
+                                    </Typography>
+
+                                    <div style={{marginTop: 12}}>
+                                      <Button raised color="primary" onClick={() => {this.props.history.push("/overview")}}>
+                                        Zur Wahlübersicht
+                                      </Button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </Grid>
+                    <Grid item md={4} />
+                </Grid>
             )
         }
 
         if (wahlkreis === -1) {
             return (
-                <div>
-                    <Grid item md={3} />
-                    <Grid item xs={12} md={4}>
-                        <Paper>
-                            <input type="text" onChange={this.handleChange}/>
-                            <button onClick={this.btnTapped}>Check Code</button>
-                            {invalidCode && <h3>Invalid Code</h3>}
-                        </Paper>
-                    </Grid>
-                    <Grid item md={3} />
-                </div>
+                <Grid container>
+                  <Grid item xs={12} md={3}>
+                    <Typography type="headline" component="h2">
+                      Abstimmung
+                    </Typography>
+                    <Typography component="p">
+                      Nach Angabe und Überprüfung Ihres Codes können Sie hier wählen.
+                    </Typography>
+                  </Grid>
+                  <Grid item md={9} />
+                  
+                  <Grid item md={4} />
+                  <Grid item xs={12} md={4}>
+                      <Card>
+                        <CardContent>
+                          <Typography type="headline" component="h2" style={{ marginBottom: 24 }}>
+                            Bitte geben Sie hier Ihren Code ein.
+                          </Typography>
+                          <div style={{textAlign: "center"}}>
+                              <div>
+                                <input type="text" style={{width: "80%"}} onChange={this.handleChange}/>
+                              </div>
+                              <div style={{marginTop: 12}}>
+                                <Button raised color="primary" onClick={this.btnTapped}>Code überprüfen</Button>
+                              </div>
+                              <div style={{marginTop: 24}}>
+                                {invalidCode ? 
+                                <Typography style={{color: "#D32F2F"}} type="button" component="p">
+                                  Ungültiger Code
+                                </Typography>
+                                :
+                                " "}
+                              </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                  </Grid>
+                  <Grid item md={4} />
+                </Grid>
             )
         }
         else return (
             <Grid container spacing={24}>
-                <Grid item xs={12}>
-                    <Paper>
-                        <h1>Sie wählen im Wahlkreis {wahlkreis} </h1>
-                        <h2>Sie haben 2 Stimmen. Choose wisely.</h2>
-                    </Paper>
+                <Grid item xs={12} md={3}>
+                  <Typography type="headline" component="h2">
+                    Sie wählen im Wahlkreis {wahlkreis}
+                  </Typography>
+                  <Typography component="p">
+                    Sie haben 2 (zwei) Stimmen. Choose wisely!
+                  </Typography>
                 </Grid>
+                <Grid item md={2} />
+                <Grid item xs={12} md={2}>
+                    <div style={{paddingTop: 6}}>
+                        <Button raised color="accent" onClick={this.sendingVoteToBackend}>Wahl abschließen!</Button>
+                    </div>
+                </Grid>
+                <Grid item md={5} />
+
                 <Grid item xs={8} width="stretch">
                     <Paper>
-                        {tableData != undefined &&
+                        {tableData !== undefined &&
                         <EnhancedTable data={tableData} title="Erststimme"
                                        onSelectionChange={this.handleStimmenAuswahl}/>}
                     </Paper>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={4}>
                     <Paper>
                         <EnhancedTable data={tableDataParties} title="Zweitstimme"
                                        onSelectionChange={this.handleStimmenAuswahl}/>
                     </Paper>
                 </Grid>
-                <button onClick={this.sendingVoteToBackend}> Wählen!</button>
             </Grid>
         )
     }
 }
 
-export default Vote;
+export default withRouter(Vote);
