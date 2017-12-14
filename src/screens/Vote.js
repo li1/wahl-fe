@@ -1,31 +1,15 @@
-import React, {Component, View, Text} from 'react';
-import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn,
-
-} from 'material-ui/Table';
-import Paper from 'material-ui/Paper';
+import React, {Component} from 'react';
+import { withRouter } from 'react-router'
 
 import Grid from 'material-ui/Grid';
-import SortableTable from "../components/SortableTable";
+
 import Typography from 'material-ui/Typography';
 import EnhancedTable from '../components/TableExample';
 
-const style = {
-    margin: 12,
-};
-
-
-let wahlkreis = -1;
 let erststimmenselection = [];
 let zweitstimmenselection = [];
-let code = "";
 
-export class Vote extends React.Component {
+export class Vote extends Component {
 
     constructor(props) {
         super(props);
