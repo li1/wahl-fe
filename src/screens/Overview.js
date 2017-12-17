@@ -86,8 +86,10 @@ class Overview extends Component {
     );
     this.setState({ erststimmenFollower: esfPrepped });
 
+    const jahr = this.props.use2013 ? "2013" : "2017";
+
     const wahlkreisRequest = await fetch(
-      "http://localhost:3000/wahlkreisuebersicht/2017"
+      "http://localhost:3000/wahlkreisuebersicht/" + jahr
     );
     const wahlkreisData = await wahlkreisRequest.json();
     wahlkreisData.forEach(
@@ -107,7 +109,7 @@ class Overview extends Component {
     this.setState({ wahlkreisData, filteredWahlkreisData: wahlkreisData });
 
     const ueberhangRequest = await fetch(
-      "http://localhost:3000/ueberhangmandate/2017"
+      "http://localhost:3000/ueberhangmandate/" + jahr
     );
     const ueberhangData = await ueberhangRequest.json();
     this.setState({ ueberhangData, filteredUeberhangData: ueberhangData });
@@ -162,10 +164,12 @@ class Overview extends Component {
       tab
     } = this.state;
     const legend = this.createLegend(this.state[selectedOption]);
+    const jahr = this.props.use2013 ? "2013" : "2017";
 
     return (
       <div>
         <WahlkreisDetail
+          jahr={jahr}
           open={showWahlkreisDetailsWithWahlkreis && true}
           wahlkreis={showWahlkreisDetailsWithWahlkreis}
           onRequestClose={() =>

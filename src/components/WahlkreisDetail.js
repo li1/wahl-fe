@@ -27,9 +27,12 @@ class WahlkreisDetail extends Component {
   async componentWillReceiveProps(nextProps) {
     const { wahlkreis } = nextProps;
 
+    const jahr = this.props.jahr
+    console.log(jahr)
+
     if (wahlkreis) {
       const req = await fetch(
-        "http://localhost:3000/wahlkreisdetails/2017/" + wahlkreis
+        "http://localhost:3000/wahlkreisdetails/" + jahr + "/" + wahlkreis
       );
       const data = await req.json();
 
