@@ -79,6 +79,10 @@ class Gewichtung extends Component {
   }
 
   async componentDidMount() {
+    if (this.props.useEinzel) {
+      await fetch("http://localhost:3000/aggregate");
+    }
+    
     const umgewP = await fetch("http://localhost:3000/umgewichtungPlot");
     let umgewresP = await umgewP.json();
 

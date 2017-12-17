@@ -23,6 +23,10 @@ class CloseCall extends Component {
   }
 
   async componentDidMount() {
+    if (this.props.useEinzel) {
+      await fetch("http://localhost:3000/aggregate");
+    }
+    
     const knappsteReq = await fetch("http://localhost:3000/knappste");
     const knappsteData = await knappsteReq.json();
     _.forEach(

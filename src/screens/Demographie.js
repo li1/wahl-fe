@@ -145,6 +145,10 @@ class Demographie extends Component {
   }
 
   async componentDidMount() {
+    if (this.props.useEinzel) {
+      await fetch("http://localhost:3000/aggregate");
+    }
+    
     const kgRes = await (await fetch("http://localhost:3000/quote/kg")).json();
     const kg = Object.keys(kgRes[0]).map(key => ({
       name: key,

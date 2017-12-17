@@ -36,6 +36,10 @@ class Overview extends Component {
   }
 
   async componentDidMount() {
+    if (this.props.useEinzel) {
+      await fetch("http://localhost:3000/aggregate");
+    }
+
     const zsg = await fetch("http://localhost:3000/bundeslanderg/zweit/sieger");
     const zweitstimmengewinner = await zsg.json();
     const zsgPrepped = Object.assign(

@@ -76,6 +76,10 @@ class Bundestag extends Component {
   }
 
   async componentDidMount() {
+    if (this.props.useEinzel) {
+      await fetch("http://localhost:3000/aggregate");
+    }
+    
     const bundestagsmitglieder = await fetch(
       "http://localhost:3000/bundestagsmitglieder"
     );
