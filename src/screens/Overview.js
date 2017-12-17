@@ -308,12 +308,6 @@ class Overview extends Component {
             )}
             {tab === 1 && <SortableTable tableData={filteredUeberhangData} />}
           </Grid>
-          {/*
-          <Grid item xs={12}>
-            <Paper>
-              <ExampleChart />
-            </Paper>
-          </Grid> */}
         </Grid>
       </div>
     );

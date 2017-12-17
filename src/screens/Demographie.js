@@ -191,8 +191,6 @@ class Demographie extends Component {
       kp
     } = this.state;
 
-    console.log(bg, bp, kg, kp, akp, abp);
-
     return (
       <Grid container spacing={24}>
         <Grid item xs={12} md={3}>
